@@ -148,3 +148,42 @@ completion of training.*
 ---
 
 ## Repository Structure
+
+brain-tumor-segmentation-brisc2025/
+├── docs/
+│   ├── _config.yml
+│   ├── _toc.yml
+│   ├── intro.md
+│   ├── introduccion.ipynb
+│   ├── revision_literatura.ipynb
+│   ├── eda.ipynb
+│   ├── preprocesamiento.ipynb
+│   ├── benchmarks.ipynb
+│   ├── referencias_bibliograficas.md
+│   ├── Imagenes/
+│   └── requirements.txt
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── .gitignore
+└── README.md
+
+---
+
+## Team
+
+**Authors**
+- Luis D. Peñaranda Pérez — Universidad del Norte
+- Johan D. López — Universidad del Norte
+- David R. Márquez — Universidad del Norte
+- Cristian C. Linero — Universidad del Norte
+
+**Supervisors**
+- Dr. Lihki Rubio — Universidad del Norte
+- Dr. Karen Florez — Universidad del Norte
+
+---
+
+## License
+
+MIT
