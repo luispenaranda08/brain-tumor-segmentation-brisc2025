@@ -149,6 +149,7 @@ completion of training.*
 
 ## Repository Structure
 
+```
 brain-tumor-segmentation-brisc2025/
 ├── docs/
 │   ├── _config.yml
@@ -167,6 +168,7 @@ brain-tumor-segmentation-brisc2025/
 │       └── deploy.yml
 ├── .gitignore
 └── README.md
+```
 
 ---
 
