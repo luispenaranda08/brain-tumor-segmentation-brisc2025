@@ -1,0 +1,21 @@
+jupyter-book>=0.15
+# Visualization
+matplotlib
+seaborn
+# Data
+numpy
+pandas
+# ML / DL
+scikit-learn
+torch
+torchvision
+segmentation-models-pytorch
+# Medical imaging
+monai
+nibabel
+Pillow
+# Utilities
+tqdm
+scipy
+# Sphinx / Book
+sphinxcontrib-bibtex

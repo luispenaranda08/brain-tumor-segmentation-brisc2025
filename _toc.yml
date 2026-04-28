@@ -1,0 +1,9 @@
+format: jb-book
+root: intro
+chapters:
+- file: introduccion
+- file: revision_literatura
+- file: eda
+- file: preprocesamiento
+- file: benchmarks
+- file: referencias_bibliograficas
