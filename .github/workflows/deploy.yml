@@ -2,6 +2,10 @@ name: deploy-book
 on:
   push:
     branches: [main]
+
+permissions:
+  contents: write
+
 jobs:
   deploy-book:
     runs-on: ubuntu-latest
@@ -14,8 +18,6 @@ jobs:
         run: pip install -r requirements.txt
       - name: Build the book
         run: jupyter-book build .
-      - name: List build output
-        run: ls _build/html || echo "EMPTY OR NOT FOUND"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
