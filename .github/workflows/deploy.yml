@@ -14,8 +14,10 @@ jobs:
         run: pip install -r requirements.txt
       - name: Build the book
         run: jupyter-book build .
+      - name: List build output
+        run: ls _build/html || echo "EMPTY OR NOT FOUND"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/html
+          publish_dir: ./_build/html
