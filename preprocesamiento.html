@@ -1,0 +1,1619 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>4. Preprocesamiento y Diseño de DataLoaders &#8212; Brain Tumor Segmentation in MRI — BRISC 2025</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'preprocesamiento';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. Benchmarks de Segmentación" href="benchmarks.html" />
+    <link rel="prev" title="3. Analisis exploratorio de datos" href="eda.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/Logo.png" class="logo__image only-light" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>
+    <script>document.write(`<img src="_static/Logo.png" class="logo__image only-dark" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Segmentación de Tumores Cerebrales en MRI mediante Aprendizaje Profundo
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html"><strong>1. Introducción</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="revision_literatura.html"><strong>2. Revisión de Literatura</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="eda.html"><strong>3. Analisis exploratorio de datos</strong></a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>4. Preprocesamiento y Diseño de DataLoaders</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html"><strong>5. Benchmarks de Segmentación</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="referencias_bibliograficas.html"><strong>Referencias</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025/issues/new?title=Issue%20on%20page%20%2Fpreprocesamiento.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/preprocesamiento.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>4. Preprocesamiento y Diseño de DataLoaders</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-del-entorno-y-dependencias">4.1 Configuración del Entorno y Dependencias</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carga-del-dataset-y-definicion-de-rutas">4.2 Carga del Dataset y Definición de Rutas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diseno-del-pipeline-de-transformaciones-y-augmentacion">4.3 Diseño del Pipeline de Transformaciones y Augmentación</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#justificacion-metodologica-de-las-augmentaciones">Justificación Metodológica de las Augmentaciones</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orquestacion-de-datos-clase-briscsegdataset">4.4 Orquestación de Datos: Clase <code class="docutils literal notranslate"><span class="pre">BRISCSegDataset</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#particion-de-datos-estratificacion-multivariable">4.5 Partición de Datos: Estratificación Multivariable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instanciacion-de-datasets-y-configuracion-de-dataloaders">4.6 Instanciación de Datasets y Configuración de DataLoaders</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#protocolo-de-validacion-del-pipeline-de-datos">4.7 Protocolo de Validación del Pipeline de Datos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validacion-cualitativa-robustez-del-pipeline-de-augmentacion">4.7.2 Validación Cualitativa: Robustez del Pipeline de Augmentación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspeccion-de-tensores-en-tiempo-de-ejecucion-batch-monitoring">4.7.3 Inspección de Tensores en Tiempo de Ejecución (Batch Monitoring)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auditoria-estadistica-post-procesamiento">4.8 Auditoría Estadística Post-procesamiento</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#consolidacion-de-la-infraestructura-de-datos-y-persistencia-de-splits">4.9 Consolidación de la Infraestructura de Datos y Persistencia de Splits</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="preprocesamiento-y-diseno-de-dataloaders">
+<h1><strong>4. Preprocesamiento y Diseño de DataLoaders</strong><a class="headerlink" href="#preprocesamiento-y-diseno-de-dataloaders" title="Permalink to this heading">#</a></h1>
+<p>En esta fase se implementa el pipeline de procesamiento digital de imágenes para el subconjunto de segmentación de BRISC 2025. El objetivo es transformar las secuencias MRI y sus respectivas máscaras en tensores optimizados para el entrenamiento de arquitecturas de segmentación semántica en PyTorch.</p>
+<p>Las decisiones de diseño se fundamentan de manera estrictamente empírica en los hallazgos del Análisis Exploratorio de Datos (EDA):</p>
+<ul class="simple">
+<li><p><strong>Estandarización Espacial:</strong> Redimensionamiento uniforme a <span class="math notranslate nohighlight">\(512 \times 512\)</span> píxeles mediante interpolación bicúbica, preservando la fidelidad del 94% de la muestra original.</p></li>
+<li><p><strong>Normalización Radiométrica:</strong> Conversión a escala de grises (1 canal) y re-escalado de intensidades al rango <span class="math notranslate nohighlight">\([0, 1]\)</span> mediante división por 255 y un <em>clamp</em> de seguridad, corrigiendo la heterogeneidad de modos de color detectada.</p></li>
+<li><p><strong>Purificación de Máscaras:</strong> Implementación de una binarización de doble paso (umbral <span class="math notranslate nohighlight">\(&gt; 0.5\)</span> antes y después de transformaciones) para eliminar artefactos de suavizado y garantizar un objetivo de aprendizaje <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> puro.</p></li>
+<li><p><strong>Estrategia de Augmentación:</strong> Aplicación de transformaciones estocásticas (rotación, escala, ruido gaussiano y contraste) exclusivamente al conjunto de entrenamiento, aumentando la robustez del modelo ante variaciones de adquisición.</p></li>
+<li><p><strong>Integridad Estadística:</strong> Creación de una partición de validación (20%) mediante un muestreo estratificado por la interacción <strong>tipo tumoral × plano anatómico</strong>, asegurando que el ajuste de hiperparámetros no se vea sesgado por desbalances de clase o plano.</p></li>
+<li><p><strong>Reproducibilidad:</strong> Persistencia de los índices de cada partición en archivos <code class="docutils literal notranslate"><span class="pre">.csv</span></code> para garantizar la comparabilidad absoluta entre el benchmark y el modelo propuesto.</p></li>
+</ul>
+<section id="configuracion-del-entorno-y-dependencias">
+<h2>4.1 Configuración del Entorno y Dependencias<a class="headerlink" href="#configuracion-del-entorno-y-dependencias" title="Permalink to this heading">#</a></h2>
+<p>Se establecen las dependencias necesarias para la manipulación de tensores, el procesamiento de imágenes médicas y la orquestación de datos. El entorno se integra con sistemas de almacenamiento para la persistencia de los artefactos generados y se configuran los parámetros de aceleración para la ingesta de datos en paralelo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span># ============================================================
+# 1. CONFIGURACIÓN DEL ENTORNO
+# ============================================================
+
+from google.colab import drive
+drive.mount(&#39;/content/drive&#39;)
+
+!pip install -q albumentations==1.4.0
+!pip install -q segmentation-models-pytorch==0.5.0
+
+import os
+import re
+import zipfile
+import time
+import random
+import warnings
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+
+import torch
+from torch.utils.data import Dataset, DataLoader
+from PIL import Image
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+from sklearn.model_selection import StratifiedShuffleSplit
+
+# ── Reproducibilidad ─────────────────────────────────────────
+SEED = 42
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed_all(SEED)
+
+warnings.filterwarnings(&#39;ignore&#39;)
+
+# ── Configuración de dispositivo ─────────────────────────────
+device = torch.device(&#39;cuda&#39; if torch.cuda.is_available() else &#39;cpu&#39;)
+
+print(&quot;=&quot; * 60)
+print(&quot;CONFIGURACIÓN DEL ENTORNO&quot;)
+print(&quot;=&quot; * 60)
+print(f&quot;PyTorch:   {torch.__version__}&quot;)
+print(f&quot;Device:    {device}&quot;)
+
+if torch.cuda.is_available():
+    print(f&quot;GPU:       {torch.cuda.get_device_name(0)}&quot;)
+    print(f&quot;VRAM:      {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB&quot;)
+else:
+    print(&quot;GPU:       No disponible&quot;)
+
+print(f&quot;Seed:      {SEED}&quot;)
+print(&quot;=&quot; * 60)
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Mounted at /content/drive
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">123.6/123.6 kB</span> <span class=" -Color -Color-Red">5.2 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ <span class=" -Color -Color-Green">154.8/154.8 kB</span> <span class=" -Color -Color-Red">5.0 MB/s</span> eta <span class=" -Color -Color-Cyan">0:00:00</span>
+?25h============================================================
+CONFIGURACIÓN DEL ENTORNO
+============================================================
+PyTorch:   2.10.0+cpu
+Device:    cpu
+GPU:       No disponible
+Seed:      42
+============================================================
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="carga-del-dataset-y-definicion-de-rutas">
+<h2>4.2 Carga del Dataset y Definición de Rutas<a class="headerlink" href="#carga-del-dataset-y-definicion-de-rutas" title="Permalink to this heading">#</a></h2>
+<p>Se descomprime el dataset BRISC 2025 desde Google Drive hacia el entorno de ejecución de Colab. A continuación, se construye un DataFrame maestro parseando directamente los nombres de archivo, los cuales contienen la información de split, tipo tumoral y plano anatómico.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ============================================================</span>
+<span class="c1"># 2. CARGA DEL DATASET Y CONSTANTES</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># ── Rutas en Google Drive ────────────────────────────────────</span>
+<span class="n">DRIVE_ROOT</span> <span class="o">=</span> <span class="s2">&quot;/content/drive/MyDrive/tumores_ceb_proyecto&quot;</span>
+<span class="n">ZIP_PATH</span>   <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DRIVE_ROOT</span><span class="p">,</span> <span class="s2">&quot;brisc2025.zip&quot;</span><span class="p">)</span>
+<span class="n">SPLITS_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DRIVE_ROOT</span><span class="p">,</span> <span class="s2">&quot;splits&quot;</span><span class="p">)</span>
+<span class="n">COLAB_DATA</span> <span class="o">=</span> <span class="s2">&quot;/content/brisc2025&quot;</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">SPLITS_DIR</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># ── Descompresión del dataset ────────────────────────────────</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">COLAB_DATA</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset disponible en: </span><span class="si">{</span><span class="n">COLAB_DATA</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Descomprimiendo dataset...&quot;</span><span class="p">)</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">ZIP_PATH</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+        <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s2">&quot;/content/&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completado en </span><span class="si">{</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t0</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> min&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Mapeos BRISC 2025 ────────────────────────────────────────</span>
+<span class="n">TUMOR_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;gl&#39;</span><span class="p">:</span> <span class="s1">&#39;Glioma&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;me&#39;</span><span class="p">:</span> <span class="s1">&#39;Meningioma&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pi&#39;</span><span class="p">:</span> <span class="s1">&#39;Pituitary&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;nt&#39;</span><span class="p">:</span> <span class="s1">&#39;No Tumor&#39;</span>
+<span class="p">}</span>
+<span class="n">PLANE_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;ax&#39;</span><span class="p">:</span> <span class="s1">&#39;Axial&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;co&#39;</span><span class="p">:</span> <span class="s1">&#39;Coronal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sa&#39;</span><span class="p">:</span> <span class="s1">&#39;Sagittal&#39;</span>
+<span class="p">}</span>
+<span class="n">PLANE_TO_IDX</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Axial&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;Coronal&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;Sagittal&#39;</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="n">PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">&quot;brisc2025_(train|test)_(\d+)_(gl|me|pi|nt)_(ax|co|sa)_t1&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># ── Construcción del DataFrame maestro ───────────────────────</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">]:</span>
+    <span class="n">img_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COLAB_DATA</span><span class="p">,</span> <span class="s2">&quot;segmentation_task&quot;</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
+    <span class="n">msk_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COLAB_DATA</span><span class="p">,</span> <span class="s2">&quot;segmentation_task&quot;</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="s2">&quot;masks&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">img_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">img_dir</span><span class="p">)):</span>
+        <span class="n">stem</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">img_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">PATTERN</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">stem</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">tumor_code</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">plane_code</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tumor_code</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>  <span class="c1"># excluir No Tumor de la tarea de segmentación</span>
+
+        <span class="n">mask_name</span> <span class="o">=</span> <span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+        <span class="n">img_path</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">img_dir</span><span class="p">,</span> <span class="n">img_name</span><span class="p">)</span>
+        <span class="n">msk_path</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msk_dir</span><span class="p">,</span> <span class="n">mask_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">msk_path</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">tumor_label</span> <span class="o">=</span> <span class="n">TUMOR_MAP</span><span class="p">[</span><span class="n">tumor_code</span><span class="p">]</span>
+        <span class="n">plane_label</span> <span class="o">=</span> <span class="n">PLANE_MAP</span><span class="p">[</span><span class="n">plane_code</span><span class="p">]</span>
+
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s1">&#39;filename&#39;</span><span class="p">:</span>    <span class="n">img_name</span><span class="p">,</span>
+            <span class="s1">&#39;image_path&#39;</span><span class="p">:</span>  <span class="n">img_path</span><span class="p">,</span>
+            <span class="s1">&#39;mask_path&#39;</span><span class="p">:</span>   <span class="n">msk_path</span><span class="p">,</span>
+            <span class="s1">&#39;split&#39;</span><span class="p">:</span>       <span class="n">split</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span>
+            <span class="s1">&#39;tumor_label&#39;</span><span class="p">:</span> <span class="n">tumor_label</span><span class="p">,</span>
+            <span class="s1">&#39;tumor_code&#39;</span><span class="p">:</span>  <span class="n">tumor_code</span><span class="p">,</span>
+            <span class="s1">&#39;plane_label&#39;</span><span class="p">:</span> <span class="n">plane_label</span><span class="p">,</span>
+            <span class="s1">&#39;plane_code&#39;</span><span class="p">:</span>  <span class="n">plane_code</span><span class="p">,</span>
+            <span class="s1">&#39;plane_idx&#39;</span><span class="p">:</span>   <span class="n">PLANE_TO_IDX</span><span class="p">[</span><span class="n">plane_label</span><span class="p">],</span>
+        <span class="p">})</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+<span class="c1"># ── Constantes del pipeline ──────────────────────────────────</span>
+<span class="n">IMG_SIZE</span>    <span class="o">=</span> <span class="mi">512</span>
+<span class="n">BATCH_SIZE</span>  <span class="o">=</span> <span class="mi">16</span>
+<span class="n">NUM_WORKERS</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">VAL_RATIO</span>   <span class="o">=</span> <span class="mf">0.2</span>
+
+<span class="n">df_train_full</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Train&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_test</span>       <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Test&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataFrame cargado: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> registros × </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> columnas&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Particiones originales:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Train (completo): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train_full</span><span class="p">)</span><span class="si">}</span><span class="s2"> pares&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Test:             </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">)</span><span class="si">}</span><span class="s2"> pares&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Parámetros del pipeline:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Resolución:   </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">×</span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Batch size:   </span><span class="si">{</span><span class="n">BATCH_SIZE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Val ratio:    </span><span class="si">{</span><span class="n">VAL_RATIO</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Num workers:  </span><span class="si">{</span><span class="n">NUM_WORKERS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Descomprimiendo dataset...
+Completado en 0.18 min
+DataFrame cargado: 4793 registros × 9 columnas
+
+Particiones originales:
+  Train (completo): 3933 pares
+  Test:             860 pares
+
+Parámetros del pipeline:
+  Resolución:   512×512
+  Batch size:   16
+  Val ratio:    0.2
+  Num workers:  4
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="diseno-del-pipeline-de-transformaciones-y-augmentacion">
+<h2>4.3 Diseño del Pipeline de Transformaciones y Augmentación<a class="headerlink" href="#diseno-del-pipeline-de-transformaciones-y-augmentacion" title="Permalink to this heading">#</a></h2>
+<p>Para garantizar la robustez del aprendizaje, se han diseñado dos flujos de transformación diferenciados mediante la librería <code class="docutils literal notranslate"><span class="pre">Albumentations</span></code>. El diseño prioriza la <strong>invariancia espacial y radiométrica</strong> moderada, evitando distorsiones que comprometan la plausibilidad anatómica de las estructuras cerebrales.</p>
+<ul class="simple">
+<li><p><strong>Pipeline de Entrenamiento:</strong> Integra operaciones de preprocesamiento base junto con técnicas de augmentación estocástica. Se seleccionaron parámetros conservadores (e.g., rotaciones <span class="math notranslate nohighlight">\(&lt; 10^\circ\)</span>) para inducir generalización sin generar muestras fuera de la distribución clínica real.</p></li>
+<li><p><strong>Pipeline de Validación/Test:</strong> Se limita exclusivamente al preprocesamiento base (redimensionamiento y tipificado de datos), garantizando que la evaluación se realice sobre representaciones fieles de las adquisiciones originales.</p></li>
+</ul>
+<section id="justificacion-metodologica-de-las-augmentaciones">
+<h3>Justificación Metodológica de las Augmentaciones<a class="headerlink" href="#justificacion-metodologica-de-las-augmentaciones" title="Permalink to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Técnica</p></th>
+<th class="head text-left"><p>Justificación Científica</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">HorizontalFlip</span></code></p></td>
+<td class="text-left"><p>Simula la simetría bilateral cerebral e incrementa la variabilidad posicional.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">ShiftScaleRotate</span></code></p></td>
+<td class="text-left"><p>Compensa variaciones menores en la angulación del paciente y el encuadre del FOV (<em>Field of View</em>).</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">RandomBrightnessContrast</span></code></p></td>
+<td class="text-left"><p>Mitiga el sesgo de intensidad detectado en el EDA entre diferentes planos y equipos.</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">GaussNoise</span></code></p></td>
+<td class="text-left"><p>Modela el ruido térmico y electrónico intrínseco a la adquisición de señales de RF en MRI.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ============================================================</span>
+<span class="c1"># 3. DEFINICIÓN DE TRANSFORMS</span>
+<span class="c1"># ============================================================</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_train_transforms</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="n">IMG_SIZE</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preprocesamiento base + augmentación moderada.</span>
+<span class="sd">    Se prioriza estabilidad a 512×512 y coherencia con los hallazgos del EDA.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span>
+            <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="mi">2</span>  <span class="c1"># BICUBIC</span>
+        <span class="p">),</span>
+
+        <span class="n">A</span><span class="o">.</span><span class="n">HorizontalFlip</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+
+        <span class="n">A</span><span class="o">.</span><span class="n">ShiftScaleRotate</span><span class="p">(</span>
+            <span class="n">shift_limit</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+            <span class="n">scale_limit</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+            <span class="n">rotate_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">border_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">p</span><span class="o">=</span><span class="mf">0.30</span>
+        <span class="p">),</span>
+
+        <span class="n">A</span><span class="o">.</span><span class="n">RandomBrightnessContrast</span><span class="p">(</span>
+            <span class="n">brightness_limit</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span>
+            <span class="n">contrast_limit</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span>
+            <span class="n">p</span><span class="o">=</span><span class="mf">0.25</span>
+        <span class="p">),</span>
+
+        <span class="n">A</span><span class="o">.</span><span class="n">GaussNoise</span><span class="p">(</span>
+            <span class="n">var_limit</span><span class="o">=</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">12.0</span><span class="p">),</span>
+            <span class="n">p</span><span class="o">=</span><span class="mf">0.15</span>
+        <span class="p">),</span>
+
+        <span class="n">ToTensorV2</span><span class="p">(),</span>
+    <span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_val_test_transforms</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="n">IMG_SIZE</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solo preprocesamiento base, sin augmentación.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span>
+            <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="mi">2</span>  <span class="c1"># BICUBIC</span>
+        <span class="p">),</span>
+        <span class="n">ToTensorV2</span><span class="p">(),</span>
+    <span class="p">])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transforms definidos:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Train:    Resize(</span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">) + augmentación moderada + ToTensor&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Val/Test: Resize(</span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">) + ToTensor&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Interpolación imagen: BICUBIC (2)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Política de máscara: re-binarización post-transform&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transforms definidos:
+  Train:    Resize(512) + augmentación moderada + ToTensor
+  Val/Test: Resize(512) + ToTensor
+  Interpolación imagen: BICUBIC (2)
+  Política de máscara: re-binarización post-transform
+</pre></div>
+</div>
+</div>
+</div>
+<p>El pipeline implementado asegura una estandarización de entrada a <span class="math notranslate nohighlight">\(512 \times 512\)</span> con una carga estocástica controlada. La inclusión de <code class="docutils literal notranslate"><span class="pre">GaussNoise</span></code> es particularmente valiosa para evitar que el modelo se sobreajuste a la nitidez artificial de algunas muestras del dataset, promoviendo el aprendizaje de bordes tumorales basados en contraste estructural y no en frecuencias espaciales altas.</p>
+</section>
+</section>
+<section id="orquestacion-de-datos-clase-briscsegdataset">
+<h2>4.4 Orquestación de Datos: Clase <code class="docutils literal notranslate"><span class="pre">BRISCSegDataset</span></code><a class="headerlink" href="#orquestacion-de-datos-clase-briscsegdataset" title="Permalink to this heading">#</a></h2>
+<p>Se implementa una clase personalizada derivada de <code class="docutils literal notranslate"><span class="pre">torch.utils.data.Dataset</span></code> para gestionar el flujo de carga y transformación de los pares imagen–máscara. La arquitectura de esta clase garantiza la integridad de los datos mediante los siguientes mecanismos:</p>
+<ul class="simple">
+<li><p><strong>Normalización Local:</strong> Conversión de intensidades al rango <span class="math notranslate nohighlight">\([0, 1]\)</span> y tipificado a <code class="docutils literal notranslate"><span class="pre">float32</span></code> de manera determinista.</p></li>
+<li><p><strong>Binarización de Doble Paso:</strong> Aplicación de un umbral rígido (<span class="math notranslate nohighlight">\(&gt; 0.5\)</span>) antes y después de las transformaciones espaciales. Esto neutraliza los valores espurios generados por la interpolación Bicúbica en los bordes de la lesión.</p></li>
+<li><p><strong>Consistencia de Tensores:</strong> Estandarización de dimensiones a <span class="math notranslate nohighlight">\((C, H, W)\)</span> y aplicación de un <em>clamp</em> de seguridad para evitar valores fuera de rango derivados de operaciones de ruido o brillo.</p></li>
+<li><p><strong>Trazabilidad de Metadatos:</strong> Inclusión de un diccionario de metadatos (<code class="docutils literal notranslate"><span class="pre">meta</span></code>) que permite realizar el análisis de rendimiento desagregado por plano y patología en la fase de inferencia.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BRISCSegDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset de segmentación para BRISC 2025.</span>
+
+<span class="sd">    Cada muestra retorna:</span>
+<span class="sd">        - image: tensor float32 de forma (1, H, W), intensidades en [0, 1]</span>
+<span class="sd">        - mask:  tensor float32 de forma (1, H, W), binario {0, 1}</span>
+<span class="sd">        - meta:  diccionario con metadatos</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="n">transforms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span> <span class="o">=</span> <span class="n">transforms</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="n">image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;mask_path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+        <span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">:</span>
+            <span class="n">transformed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transforms</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">transformed</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+            <span class="n">mask</span>  <span class="o">=</span> <span class="n">transformed</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+            <span class="n">mask</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">mask</span>  <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;tumor_label&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;plane_label&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;tumor_code&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;tumor_code&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;plane_code&#39;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;plane_code&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;plane_idx&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;plane_idx&#39;</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">meta</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_labels_for_stratification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Clase BRISCSegDataset definida correctamente.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Clase BRISCSegDataset definida correctamente.
+</pre></div>
+</div>
+</div>
+</div>
+<p>La clase <code class="docutils literal notranslate"><span class="pre">BRISCSegDataset</span></code> actúa como un filtro de calidad. Al forzar la binarización y el clamp de intensidad, eliminamos la entropía innecesaria del input, permitiendo que el modelo se enfoque exclusivamente en aprender la discriminación de texturas entre tejido sano y tumoral.</p>
+</section>
+<section id="particion-de-datos-estratificacion-multivariable">
+<h2>4.5 Partición de Datos: Estratificación Multivariable<a class="headerlink" href="#particion-de-datos-estratificacion-multivariable" title="Permalink to this heading">#</a></h2>
+<p>Para mitigar el riesgo de sesgo de selección durante la optimización del modelo, se implementa una partición estratificada mediante <code class="docutils literal notranslate"><span class="pre">StratifiedShuffleSplit</span></code>. A diferencia de una partición aleatoria simple, este método garantiza que las proporciones de la interacción entre <strong>tipo tumoral</strong> y <strong>plano anatómico</strong> se preserven tanto en el conjunto de entrenamiento (80%) como en el de validación (20%).</p>
+<p>Esta estrategia es fundamental dado que el EDA reveló que el <em>Tumor Ratio</em> y las características radiométricas varían significativamente según la patología y la orientación del corte. Al mantener estas proporciones constantes, aseguramos que las métricas de validación sean estimadores insesgados del rendimiento del modelo, facilitando una convergencia más estable y una comparación justa con el conjunto de prueba independiente.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">strat_labels</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">df_train_full</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">df_train_full</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">sss</span> <span class="o">=</span> <span class="n">StratifiedShuffleSplit</span><span class="p">(</span>
+    <span class="n">n_splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="n">VAL_RATIO</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="n">SEED</span>
+<span class="p">)</span>
+
+<span class="n">train_idx</span><span class="p">,</span> <span class="n">val_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+    <span class="n">sss</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">strat_labels</span><span class="p">)),</span> <span class="n">strat_labels</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">df_train</span> <span class="o">=</span> <span class="n">df_train_full</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df_val</span>   <span class="o">=</span> <span class="n">df_train_full</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">val_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Particiones resultantes:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Train:      </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">)</span><span class="si">}</span><span class="s2"> pares (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train_full</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Validation: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">)</span><span class="si">}</span><span class="s2"> pares (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train_full</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Test:       </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">)</span><span class="si">}</span><span class="s2"> pares&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Distribución Tumor × Plano — Train&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df_train</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">],</span> <span class="n">df_train</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">],</span>
+                  <span class="n">margins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">margins_name</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Distribución Tumor × Plano — Validation&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df_val</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">],</span> <span class="n">df_val</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">],</span>
+                  <span class="n">margins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">margins_name</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Distribución Tumor × Plano — Test&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">],</span>
+                  <span class="n">margins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">margins_name</span><span class="o">=</span><span class="s1">&#39;Total&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Proporciones por tipo tumoral:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">split_name</span><span class="p">,</span> <span class="n">split_df</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;Train&#39;</span><span class="p">,</span> <span class="n">df_train</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Val&#39;</span><span class="p">,</span> <span class="n">df_val</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Test&#39;</span><span class="p">,</span> <span class="n">df_test</span><span class="p">)]:</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="n">split_df</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">split_name</span><span class="si">:</span><span class="s2">6s</span><span class="si">}</span><span class="s2">: &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Glioma=</span><span class="si">{</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Glioma&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%  &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Meningioma=</span><span class="si">{</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Meningioma&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%  &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Pituitary=</span><span class="si">{</span><span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Pituitary&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Particiones resultantes:
+  Train:      3146 pares (80.0%)
+  Validation: 787 pares (20.0%)
+  Test:       860 pares
+
+Distribución Tumor × Plano — Train
+plane_label  Axial  Coronal  Sagittal  Total
+tumor_label                                 
+Glioma         315      344       258    917
+Meningioma     338      341       384   1063
+Pituitary      341      408       417   1166
+Total          994     1093      1059   3146
+
+Distribución Tumor × Plano — Validation
+plane_label  Axial  Coronal  Sagittal  Total
+tumor_label                                 
+Glioma          79       86        65    230
+Meningioma      85       85        96    266
+Pituitary       85      102       104    291
+Total          249      273       265    787
+
+Distribución Tumor × Plano — Test
+plane_label  Axial  Coronal  Sagittal  Total
+tumor_label                                 
+Glioma          85       81        88    254
+Meningioma     137       86        83    306
+Pituitary      124       90        86    300
+Total          346      257       257    860
+
+Proporciones por tipo tumoral:
+  Train : Glioma=29.1%  Meningioma=33.8%  Pituitary=37.1%
+  Val   : Glioma=29.2%  Meningioma=33.8%  Pituitary=37.0%
+  Test  : Glioma=29.5%  Meningioma=35.6%  Pituitary=34.9%
+</pre></div>
+</div>
+</div>
+</div>
+<p>La partición resultante garantiza una base de entrenamiento de <strong>3,146 pares</strong>, con una reserva de validación de <strong>787 muestras</strong>. La homogeneidad lograda entre Train y Val (visibles en las tablas de contingencia) neutraliza cualquier variable de confusión relacionada con la prevalencia de planos o patologías, permitiendo que las curvas de pérdida y exactitud reflejen el aprendizaje real de características morfológicas y no una adaptación a desbalances accidentales de la muestra.</p>
+</section>
+<section id="instanciacion-de-datasets-y-configuracion-de-dataloaders">
+<h2>4.6 Instanciación de Datasets y Configuración de DataLoaders<a class="headerlink" href="#instanciacion-de-datasets-y-configuracion-de-dataloaders" title="Permalink to this heading">#</a></h2>
+<p>Se procede a la instanciación de los objetos <code class="docutils literal notranslate"><span class="pre">BRISCSegDataset</span></code> para las tres particiones del estudio, integrando los pipelines de transformación definidos previamente. Para la gestión de los flujos de datos hacia el modelo, se configuran objetos <code class="docutils literal notranslate"><span class="pre">DataLoader</span></code> de PyTorch, parametrizados para maximizar el rendimiento del hardware.</p>
+<p>La configuración de carga de datos incluye mecanismos de <strong>aceleración de pipeline</strong>:</p>
+<ul class="simple">
+<li><p><strong>Carga Multiproceso:</strong> Uso de múltiples subprocesos (<code class="docutils literal notranslate"><span class="pre">num_workers</span></code>) para la carga y preprocesamiento en paralelo.</p></li>
+<li><p><strong>Prefetching:</strong> Implementación de un factor de pre-recuperación para anticipar la carga de batches mientras la unidad de procesamiento ejecuta el entrenamiento.</p></li>
+<li><p><strong>Persistencia de Workers:</strong> Mantenimiento de los procesos de carga activos entre épocas para reducir la latencia de inicialización.</p></li>
+</ul>
+<p>Esta arquitectura asegura que el pipeline de datos no se convierta en un limitante para la capacidad de cómputo disponible, permitiendo un flujo constante de tensores hacia el modelo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">BRISCSegDataset</span><span class="p">(</span><span class="n">df_train</span><span class="p">,</span> <span class="n">transforms</span><span class="o">=</span><span class="n">get_train_transforms</span><span class="p">())</span>
+<span class="n">val_dataset</span>   <span class="o">=</span> <span class="n">BRISCSegDataset</span><span class="p">(</span><span class="n">df_val</span><span class="p">,</span>   <span class="n">transforms</span><span class="o">=</span><span class="n">get_val_test_transforms</span><span class="p">())</span>
+<span class="n">test_dataset</span>  <span class="o">=</span> <span class="n">BRISCSegDataset</span><span class="p">(</span><span class="n">df_test</span><span class="p">,</span>  <span class="n">transforms</span><span class="o">=</span><span class="n">get_val_test_transforms</span><span class="p">())</span>
+
+<span class="n">PIN_MEMORY</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+<span class="n">PERSISTENT_WORKERS</span> <span class="o">=</span> <span class="n">NUM_WORKERS</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+<span class="n">_dl_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="n">NUM_WORKERS</span><span class="p">,</span>
+    <span class="n">pin_memory</span><span class="o">=</span><span class="n">PIN_MEMORY</span><span class="p">,</span>
+    <span class="n">persistent_workers</span><span class="o">=</span><span class="n">PERSISTENT_WORKERS</span> <span class="k">if</span> <span class="n">NUM_WORKERS</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">NUM_WORKERS</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">_dl_kwargs</span><span class="p">[</span><span class="s2">&quot;prefetch_factor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">train_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_dl_kwargs</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">val_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">val_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_dl_kwargs</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">test_dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">_dl_kwargs</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Datasets y DataLoaders creados:&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;Dataset&#39;</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Samples&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Batches&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Transforms&#39;</span><span class="si">:</span><span class="s2">&gt;24</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;─&quot;</span> <span class="o">*</span> <span class="mi">62</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Train&#39;</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Augmentación moderada&#39;</span><span class="si">:</span><span class="s2">&gt;24</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Validation&#39;</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_loader</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Preproc only&#39;</span><span class="si">:</span><span class="s2">&gt;24</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Test&#39;</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_loader</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Preproc only&#39;</span><span class="si">:</span><span class="s2">&gt;24</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Configuración de carga:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Num workers:         </span><span class="si">{</span><span class="n">NUM_WORKERS</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Pin memory:          </span><span class="si">{</span><span class="n">PIN_MEMORY</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Persistent workers:  </span><span class="si">{</span><span class="n">_dl_kwargs</span><span class="p">[</span><span class="s1">&#39;persistent_workers&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Prefetch factor:     </span><span class="si">{</span><span class="n">_dl_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;prefetch_factor&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/A&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Datasets y DataLoaders creados:
+
+Dataset          Samples  Batches               Transforms
+──────────────────────────────────────────────────────────────
+Train               3146      196    Augmentación moderada
+Validation           787       50             Preproc only
+Test                 860       54             Preproc only
+
+Configuración de carga:
+  Num workers:         4
+  Pin memory:          False
+  Persistent workers:  True
+  Prefetch factor:     2
+</pre></div>
+</div>
+</div>
+</div>
+<p>La orquestación de datos resultante distribuye las <strong>4,793 muestras</strong> en flujos de trabajo paralelos. El conjunto de entrenamiento se ha fragmentado en <strong>196 batches</strong>, proporcionando un compromiso ideal entre la estimación del gradiente y el aprovechamiento de la gpu.</p>
+</section>
+<section id="protocolo-de-validacion-del-pipeline-de-datos">
+<h2>4.7 Protocolo de Validación del Pipeline de Datos<a class="headerlink" href="#protocolo-de-validacion-del-pipeline-de-datos" title="Permalink to this heading">#</a></h2>
+<p>La integridad de los tensores de entrada es una condición <em>sine qua non</em> para la convergencia de redes neuronales profundas. En esta sección, se implementa un protocolo de verificación sistemática sobre los <code class="docutils literal notranslate"><span class="pre">DataLoaders</span></code> para garantizar la ausencia de anomalías estructurales o radiométricas.</p>
+<p>El protocolo evalúa tres dimensiones críticas:</p>
+<ul class="simple">
+<li><p><strong>Consistencia Dimensional:</strong> Validación de que los tensores sigan el formato <span class="math notranslate nohighlight">\((B, C, H, W)\)</span> y que las máscaras coincidan espacialmente con las imágenes.</p></li>
+<li><p><strong>Integridad Numérica:</strong> Verificación de que el re-escalado <span class="math notranslate nohighlight">\([0, 1]\)</span> y la binarización <span class="math notranslate nohighlight">\(\{0, 1\}\)</span> se hayan ejecutado correctamente, asegurando que el rango dinámico sea el esperado por las funciones de activación del modelo.</p></li>
+<li><p><strong>Sincronización de Metadatos:</strong> Confirmación de que los metadatos (etiquetas de patología y códigos de plano) se transmitan correctamente junto con los tensores, permitiendo la trazabilidad y el análisis posterior de resultados.</p></li>
+</ul>
+<p>Esta auditoría técnica actúa como un <em>checkpoint</em> de seguridad, asegurando que el modelo reciba datos purificados y estadísticamente consistentes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">verify_batch</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifica dimensiones, tipos, rangos y metadatos de un batch.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">images</span><span class="p">,</span> <span class="n">masks</span><span class="p">,</span> <span class="n">metas</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">loader</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">60</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verificación: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">60</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Images shape:  </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Images dtype:  </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Images range:  [</span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">images</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Masks shape:   </span><span class="si">{</span><span class="n">masks</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Masks dtype:   </span><span class="si">{</span><span class="n">masks</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Masks unique:  </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Masks range:   [</span><span class="si">{</span><span class="n">masks</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">masks</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Meta keys:     </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">metas</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tumor labels:  </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">metas</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plane labels:  </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">metas</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Plane idx:     </span><span class="si">{</span><span class="n">metas</span><span class="p">[</span><span class="s1">&#39;plane_idx&#39;</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;Shape (B, 1, H, W)&#39;</span><span class="p">:</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">IMG_SIZE</span><span class="p">,</span> <span class="n">IMG_SIZE</span><span class="p">),</span>
+        <span class="s1">&#39;Float32&#39;</span><span class="p">:</span> <span class="n">images</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="s1">&#39;Range [0,1]&#39;</span><span class="p">:</span> <span class="n">images</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">images</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s1">&#39;Mask binary&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">masks</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span><span class="o">.</span><span class="n">issubset</span><span class="p">({</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">}),</span>
+        <span class="s1">&#39;Mask shape match&#39;</span><span class="p">:</span> <span class="n">masks</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">images</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="s1">&#39;plane_idx en meta&#39;</span><span class="p">:</span> <span class="s1">&#39;plane_idx&#39;</span> <span class="ow">in</span> <span class="n">metas</span><span class="p">,</span>
+        <span class="s1">&#39;plane_idx dtype long&#39;</span><span class="p">:</span> <span class="n">metas</span><span class="p">[</span><span class="s1">&#39;plane_idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Validaciones:&quot;</span><span class="p">)</span>
+    <span class="n">all_ok</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">check_name</span><span class="p">,</span> <span class="n">passed</span> <span class="ow">in</span> <span class="n">checks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;Correcto&#39;</span> <span class="k">if</span> <span class="n">passed</span> <span class="k">else</span> <span class="s1">&#39;ERROR&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">status</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">check_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">passed</span><span class="p">:</span>
+            <span class="n">all_ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">all_ok</span>
+
+
+<span class="n">ok_train</span> <span class="o">=</span> <span class="n">verify_batch</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="s2">&quot;Train DataLoader&quot;</span><span class="p">)</span>
+<span class="n">ok_val</span>   <span class="o">=</span> <span class="n">verify_batch</span><span class="p">(</span><span class="n">val_loader</span><span class="p">,</span>   <span class="s2">&quot;Validation DataLoader&quot;</span><span class="p">)</span>
+<span class="n">ok_test</span>  <span class="o">=</span> <span class="n">verify_batch</span><span class="p">(</span><span class="n">test_loader</span><span class="p">,</span>  <span class="s2">&quot;Test DataLoader&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">60</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">ok_train</span> <span class="ow">and</span> <span class="n">ok_val</span> <span class="ow">and</span> <span class="n">ok_test</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TODOS LOS DATALOADERS VERIFICADOS CORRECTAMENTE&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SE DETECTARON PROBLEMAS — REVISAR ARRIBA&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">60</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>============================================================
+Verificación: Train DataLoader
+============================================================
+Images shape:  torch.Size([16, 1, 512, 512])
+Images dtype:  torch.float32
+Images range:  [0.0000, 1.0000]
+Masks shape:   torch.Size([16, 1, 512, 512])
+Masks dtype:   torch.float32
+Masks unique:  [0.0, 1.0]
+Masks range:   [0.0000, 1.0000]
+Meta keys:     [&#39;filename&#39;, &#39;tumor_label&#39;, &#39;plane_label&#39;, &#39;tumor_code&#39;, &#39;plane_code&#39;, &#39;plane_idx&#39;]
+Tumor labels:  [&#39;Pituitary&#39;, &#39;Glioma&#39;, &#39;Pituitary&#39;, &#39;Pituitary&#39;]
+Plane labels:  [&#39;Coronal&#39;, &#39;Axial&#39;, &#39;Sagittal&#39;, &#39;Axial&#39;]
+Plane idx:     [1, 0, 2, 0]
+
+Validaciones:
+  Correcto   Shape (B, 1, H, W)
+  Correcto   Float32
+  Correcto   Range [0,1]
+  Correcto   Mask binary
+  Correcto   Mask shape match
+  Correcto   plane_idx en meta
+  Correcto   plane_idx dtype long
+
+============================================================
+Verificación: Validation DataLoader
+============================================================
+Images shape:  torch.Size([16, 1, 512, 512])
+Images dtype:  torch.float32
+Images range:  [0.0000, 1.0000]
+Masks shape:   torch.Size([16, 1, 512, 512])
+Masks dtype:   torch.float32
+Masks unique:  [0.0, 1.0]
+Masks range:   [0.0000, 1.0000]
+Meta keys:     [&#39;filename&#39;, &#39;tumor_label&#39;, &#39;plane_label&#39;, &#39;tumor_code&#39;, &#39;plane_code&#39;, &#39;plane_idx&#39;]
+Tumor labels:  [&#39;Pituitary&#39;, &#39;Meningioma&#39;, &#39;Meningioma&#39;, &#39;Meningioma&#39;]
+Plane labels:  [&#39;Coronal&#39;, &#39;Axial&#39;, &#39;Coronal&#39;, &#39;Sagittal&#39;]
+Plane idx:     [1, 0, 1, 2]
+
+Validaciones:
+  Correcto   Shape (B, 1, H, W)
+  Correcto   Float32
+  Correcto   Range [0,1]
+  Correcto   Mask binary
+  Correcto   Mask shape match
+  Correcto   plane_idx en meta
+  Correcto   plane_idx dtype long
+
+============================================================
+Verificación: Test DataLoader
+============================================================
+Images shape:  torch.Size([16, 1, 512, 512])
+Images dtype:  torch.float32
+Images range:  [0.0000, 1.0000]
+Masks shape:   torch.Size([16, 1, 512, 512])
+Masks dtype:   torch.float32
+Masks unique:  [0.0, 1.0]
+Masks range:   [0.0000, 1.0000]
+Meta keys:     [&#39;filename&#39;, &#39;tumor_label&#39;, &#39;plane_label&#39;, &#39;tumor_code&#39;, &#39;plane_code&#39;, &#39;plane_idx&#39;]
+Tumor labels:  [&#39;Glioma&#39;, &#39;Glioma&#39;, &#39;Glioma&#39;, &#39;Glioma&#39;]
+Plane labels:  [&#39;Axial&#39;, &#39;Axial&#39;, &#39;Axial&#39;, &#39;Axial&#39;]
+Plane idx:     [0, 0, 0, 0]
+
+Validaciones:
+  Correcto   Shape (B, 1, H, W)
+  Correcto   Float32
+  Correcto   Range [0,1]
+  Correcto   Mask binary
+  Correcto   Mask shape match
+  Correcto   plane_idx en meta
+  Correcto   plane_idx dtype long
+
+============================================================
+TODOS LOS DATALOADERS VERIFICADOS CORRECTAMENTE
+============================================================
+</pre></div>
+</div>
+</div>
+</div>
+<p>El pipeline ha superado con éxito las 7 pruebas de estrés dimensional y numérico. La uniformidad de los tipos de datos y la binarización estricta del objetivo (máscaras) garantizan que el gradiente del modelo no se vea contaminado por valores espurios. Con los <code class="docutils literal notranslate"><span class="pre">DataLoaders</span></code> verificados, el sistema está listo para la fase de modelado, con la certeza de que cualquier variación en el rendimiento será atribuible a la arquitectura y no a inconsistencias en la ingesta de datos.</p>
+</section>
+<section id="validacion-cualitativa-robustez-del-pipeline-de-augmentacion">
+<h2>4.7.2 Validación Cualitativa: Robustez del Pipeline de Augmentación<a class="headerlink" href="#validacion-cualitativa-robustez-del-pipeline-de-augmentacion" title="Permalink to this heading">#</a></h2>
+<p>La aplicación de transformaciones estocásticas debe equilibrar la generación de variabilidad con la preservación de la integridad anatómica. En esta sección, se realiza una inspección visual de las transformaciones aplicadas sobre un espécimen de control (Meningioma en plano Axial).</p>
+<p>El objetivo es doble:</p>
+<ol class="arabic simple">
+<li><p><strong>Verificación de Sincronía:</strong> Confirmar que las transformaciones geométricas (rotación, traslación y escala) se apliquen de forma idéntica e inmediata tanto al tensor de imagen como al de la máscara.</p></li>
+<li><p><strong>Evaluación de Plausibilidad:</strong> Validar que las perturbaciones radiométricas (ruido Gaussiano y cambios de contraste) no degraden la señal hasta el punto de hacer irreconocibles los bordes de la lesión.</p></li>
+</ol>
+<p>Esta inspección garantiza que el modelo sea entrenado con datos que presenten una varianza controlada, promoviendo una generalización robusta ante las condiciones de adquisición heterogéneas detectadas en el EDA.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sample_row</span> <span class="o">=</span> <span class="n">df_train</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">df_train</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Meningioma&#39;</span><span class="p">)</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">df_train</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Axial&#39;</span><span class="p">)</span>
+<span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">orig_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">sample_row</span><span class="p">[</span><span class="s1">&#39;image_path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">),</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+<span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+
+<span class="n">orig_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">sample_row</span><span class="p">[</span><span class="s1">&#39;mask_path&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">),</span>
+    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+<span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="n">orig_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">orig_mask</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">aug_transform</span> <span class="o">=</span> <span class="n">get_train_transforms</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">col</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">base_transform</span> <span class="o">=</span> <span class="n">get_val_test_transforms</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">base_transform</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">orig_image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">orig_mask</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Original&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">aug_transform</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">orig_image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">orig_mask</span><span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Augment #</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">img_tensor</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+    <span class="n">msk_tensor</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span>
+
+    <span class="n">img_np</span> <span class="o">=</span> <span class="n">img_tensor</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="n">img_tensor</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> <span class="n">img_tensor</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">msk_np</span> <span class="o">=</span> <span class="n">msk_tensor</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="n">msk_tensor</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="k">else</span> <span class="n">msk_tensor</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+    <span class="n">img_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">img_np</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">msk_np</span> <span class="o">=</span> <span class="p">(</span><span class="n">msk_np</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_np</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">msk_np</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="n">overlay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">img_np</span><span class="p">,</span> <span class="n">img_np</span><span class="p">,</span> <span class="n">img_np</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">msk_bool</span> <span class="o">=</span> <span class="n">msk_np</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+    <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.4</span>
+    <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.4</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Imagen&#39;</span><span class="p">,</span> <span class="s1">&#39;Máscara&#39;</span><span class="p">,</span> <span class="s1">&#39;Overlay&#39;</span><span class="p">]):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s1">&#39;Efecto de las Augmentaciones — </span><span class="si">{</span><span class="n">sample_row</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> / </span><span class="si">{</span><span class="n">sample_row</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="sa">f</span><span class="s1">&#39;(Original a la izquierda, 5 variaciones augmentadas a la derecha)&#39;</span><span class="p">,</span>
+    <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DRIVE_ROOT</span><span class="p">,</span> <span class="s1">&#39;preproc_augmentation_demo.png&#39;</span><span class="p">),</span>
+            <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/3bf0dca109d65f1e76c3064c224a4ac9183580371f9dd166415962edf7ae6b8f.png" src="_images/3bf0dca109d65f1e76c3064c224a4ac9183580371f9dd166415962edf7ae6b8f.png" />
+</div>
+</div>
+<p>La galería de augmentación confirma que el pipeline preserva la coherencia topológica de las anotaciones bajo condiciones de estrés geométrico y radiométrico. Se destaca la capacidad del pipeline para simular condiciones de baja relación señal-ruido (SNR) mediante el ruido gaussiano, lo cual obligará al modelo a priorizar características estructurales macroscópicas sobre texturas locales de alta frecuencia. La sincronización perfecta en los overlays de rotación valida que no existe deriva espacial en el preprocesamiento, asegurando un aprendizaje supervisado de alta fidelidad.</p>
+</section>
+<section id="inspeccion-de-tensores-en-tiempo-de-ejecucion-batch-monitoring">
+<h2>4.7.3 Inspección de Tensores en Tiempo de Ejecución (Batch Monitoring)<a class="headerlink" href="#inspeccion-de-tensores-en-tiempo-de-ejecucion-batch-monitoring" title="Permalink to this heading">#</a></h2>
+<p>La verificación final del pipeline consiste en la extracción y visualización de un lote de entrenamiento completo (<code class="docutils literal notranslate"><span class="pre">batch</span></code>). A diferencia de las pruebas unitarias sobre imágenes individuales, esta inspección permite validar el comportamiento del <code class="docutils literal notranslate"><span class="pre">DataLoader</span></code> bajo condiciones de carga multihilo y pre-recuperación (<em>prefetching</em>).</p>
+<p>Se evalúa la <strong>coherencia de grupo</strong> en tres niveles:</p>
+<ol class="arabic simple">
+<li><p><strong>Variabilidad Intra-Batch:</strong> Confirmación de que las transformaciones estocásticas se aplican de forma diversa a cada muestra del lote, evitando la repetición de patrones.</p></li>
+<li><p><strong>Sincronización de Máscaras:</strong> Validación visual de que, incluso bajo transformaciones extremas (como el ruido gaussiano intenso observado en las muestras centrales), la máscara de segmentación permanece vinculada a la morfología tumoral subyacente.</p></li>
+<li><p><strong>Normalización de Tensores:</strong> Verificación de que el rango dinámico <span class="math notranslate nohighlight">\([0, 1]\)</span> se mantenga consistente en todo el lote, garantizando la estabilidad numérica del proceso de retropropagación (<em>backpropagation</em>).</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ============================================================</span>
+<span class="c1"># 7.3 VERIFICACIÓN VISUAL: MUESTRAS DE UN BATCH</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">images</span><span class="p">,</span> <span class="n">masks</span><span class="p">,</span> <span class="n">metas</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">train_loader</span><span class="p">))</span>
+
+<span class="n">n_show</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_show</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">n_show</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_show</span><span class="p">):</span>
+    <span class="n">img_np</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">msk_np</span> <span class="o">=</span> <span class="n">masks</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+    <span class="n">img_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">img_np</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">msk_np</span> <span class="o">=</span> <span class="p">(</span><span class="n">msk_np</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_np</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metas</span><span class="p">[</span><span class="s1">&#39;tumor_label&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">metas</span><span class="p">[</span><span class="s1">&#39;plane_label&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
+    <span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">msk_np</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+    <span class="n">overlay</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">img_np</span><span class="p">,</span> <span class="n">img_np</span><span class="p">,</span> <span class="n">img_np</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">msk_bool</span> <span class="o">=</span> <span class="n">msk_np</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+    <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.4</span>
+    <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="n">msk_bool</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.4</span>
+
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Imagen&#39;</span><span class="p">,</span> <span class="s1">&#39;Máscara&#39;</span><span class="p">,</span> <span class="s1">&#39;Overlay&#39;</span><span class="p">]):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;Muestras de un Batch de Entrenamiento (con augmentación moderada)&#39;</span><span class="p">,</span>
+             <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.02</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DRIVE_ROOT</span><span class="p">,</span> <span class="s1">&#39;preproc_batch_samples.png&#39;</span><span class="p">),</span>
+            <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Output hidden; open in https://colab.research.google.com to view.
+</pre></div>
+</div>
+</div>
+</div>
+<p>La inspección del lote de entrenamiento revela un entorno de aprendizaje altamente regularizado. La combinación de transformaciones geométricas y la inyección de ruido estocástico asegura que el modelo sea expuesto a múltiples variaciones de una misma patología, minimizando el riesgo de memorización (<em>overfitting</em>). La alineación persistente de los mapas de segmentación en casos de alta degradación visual garantiza que el entrenamiento supervisado conserve un gradiente informativo de alta calidad, preparando el camino para una fase de modelado robusta y generalizable.</p>
+</section>
+<section id="auditoria-estadistica-post-procesamiento">
+<h2>4.8 Auditoría Estadística Post-procesamiento<a class="headerlink" href="#auditoria-estadistica-post-procesamiento" title="Permalink to this heading">#</a></h2>
+<p>La fase de preprocesamiento concluye con una auditoría cuantitativa sobre el conjunto de validación. El objetivo es verificar la <strong>preservación de la señal</strong> tras las operaciones de redimensionamiento a <span class="math notranslate nohighlight">\(512 \times 512\)</span> y normalización.</p>
+<p>Se analizan dos indicadores críticos:</p>
+<ul class="simple">
+<li><p><strong>Estabilidad Radiométrica:</strong> Validación de que la media y desviación estándar de las intensidades en el conjunto de validación procesado se mantengan alineadas con los hallazgos del EDA original (Sección 3.5), asegurando que no hubo pérdida de contraste.</p></li>
+<li><p><strong>Consistencia Morfométrica:</strong> Comparación del <em>Tumor Ratio</em> post-procesamiento frente al nativo. Dado que el redimensionamiento utiliza interpolación, es vital confirmar que el área relativa de la lesión se mantiene estable, especialmente en los valores mínimos, para garantizar que los tumores más pequeños sigan siendo detectables por la red.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pixel_means</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">pixel_stds</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">tumor_ratios_post</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">val_dataset</span><span class="p">)):</span>
+    <span class="n">img</span><span class="p">,</span> <span class="n">msk</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">val_dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">pixel_means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">pixel_stds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">tumor_ratios_post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msk</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+<span class="n">pixel_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pixel_means</span><span class="p">)</span>
+<span class="n">pixel_stds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pixel_stds</span><span class="p">)</span>
+<span class="n">tumor_ratios_post</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tumor_ratios_post</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Estadísticos Post-Preprocesamiento (sobre Validation set, n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">val_dataset</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Intensidad de píxeles:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Media global:   </span><span class="si">{</span><span class="n">pixel_means</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Std global:     </span><span class="si">{</span><span class="n">pixel_means</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Rango medias:   [</span><span class="si">{</span><span class="n">pixel_means</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pixel_means</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Tumor Ratio (post-resize a </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">×</span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Media:          </span><span class="si">{</span><span class="n">tumor_ratios_post</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mediana:        </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">tumor_ratios_post</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Min:            </span><span class="si">{</span><span class="n">tumor_ratios_post</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Max:            </span><span class="si">{</span><span class="n">tumor_ratios_post</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estadísticos Post-Preprocesamiento (sobre Validation set, n=787)
+============================================================
+Intensidad de píxeles:
+  Media global:   0.1671
+  Std global:     0.0509
+  Rango medias:   [0.0582, 0.4568]
+
+Tumor Ratio (post-resize a 512×512):
+  Media:          1.67%
+  Mediana:        1.24%
+  Min:            0.1163%
+  Max:            9.06%
+</pre></div>
+</div>
+</div>
+</div>
+<p>Los estadísticos post-procesamiento ratifican la integridad del pipeline. La convergencia de las métricas de intensidad y morfometría con los datos nativos del EDA demuestra que las transformaciones aplicadas no han inducido una degradación de la información diagnóstica. La estabilidad del <em>Tumor Ratio</em> (con una variación marginal del 0.02%) asegura que el modelo será entrenado sobre una representación fiel de la carga tumoral real, manteniendo la dificultad inherente del problema de segmentación sin introducir sesgos por interpolación.</p>
+</section>
+<section id="consolidacion-de-la-infraestructura-de-datos-y-persistencia-de-splits">
+<h2>4.9 Consolidación de la Infraestructura de Datos y Persistencia de Splits<a class="headerlink" href="#consolidacion-de-la-infraestructura-de-datos-y-persistencia-de-splits" title="Permalink to this heading">#</a></h2>
+<p>La fase de preprocesamiento concluye con la exportación del diseño experimental. La persistencia de los subconjuntos de <strong>entrenamiento, validación y prueba</strong> en archivos <code class="docutils literal notranslate"><span class="pre">.csv</span></code> independientes es una medida crítica para garantizar la <strong>reproducibilidad científica</strong> del estudio. Al fijar los índices de cada partición, se asegura que las comparaciones posteriores entre los modelos del <em>benchmark</em> y la arquitectura propuesta se realicen sobre bases de datos idénticas, neutralizando variables de confusión derivadas de la aleatoriedad en el re-muestreo.</p>
+<p>Este resumen ejecutivo encapsula todas las transformaciones aplicadas, desde la estandarización radiométrica hasta las políticas de carga de los <code class="docutils literal notranslate"><span class="pre">DataLoaders</span></code>, proporcionando un punto de entrada inmutable para las fases de modelado y evaluación estadística.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RESUMEN DEL PIPELINE DE PREPROCESAMIENTO&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">┌────────────────────────────────────────────────────────────────────────┐</span>
+<span class="s2">│  PARTICIONES                                                          │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  Train:       </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2"> imágenes  (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)  [Con augmentación]        │</span>
+<span class="s2">│  Validation:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2"> imágenes  (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)  [Sin augmentación]        │</span>
+<span class="s2">│  Test:        </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2"> imágenes  (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)  [Sin augmentación]        │</span>
+<span class="s2">│  Total:       </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2"> imágenes                                          │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  PREPROCESAMIENTO BASE (todos los splits)                              │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  1. Conversión a escala de grises (1 canal)                            │</span>
+<span class="s2">│  2. Re-escalado de intensidades a [0, 1]                               │</span>
+<span class="s2">│  3. Resize a </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">×</span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2"> (BICUBIC)                                 │</span>
+<span class="s2">│  4. Clamp de seguridad a [0, 1]                                        │</span>
+<span class="s2">│  5. Binarización de máscara (umbral &gt; 0.5)                             │</span>
+<span class="s2">│  6. Conversión a tensor PyTorch (float32)                              │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  AUGMENTACIÓN (solo train)                                             │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  • HorizontalFlip (p=0.5)                                              │</span>
+<span class="s2">│  • ShiftScaleRotate (p=0.30)                                           │</span>
+<span class="s2">│  • RandomBrightnessContrast (p=0.25)                                   │</span>
+<span class="s2">│  • GaussNoise (p=0.15)                                                 │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  DATALOADERS                                                           │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  Batch size:          </span><span class="si">{</span><span class="n">BATCH_SIZE</span><span class="si">:</span><span class="s2">&lt;3</span><span class="si">}</span><span class="s2">                                                 │</span>
+<span class="s2">│  Num workers:         </span><span class="si">{</span><span class="n">NUM_WORKERS</span><span class="si">:</span><span class="s2">&lt;3</span><span class="si">}</span><span class="s2">                                                 │</span>
+<span class="s2">│  Pin memory:          </span><span class="si">{</span><span class="n">PIN_MEMORY</span><span class="si">!s:</span><span class="s2">&lt;5</span><span class="si">}</span><span class="s2">                                               │</span>
+<span class="s2">│  Persistent workers:  </span><span class="si">{</span><span class="n">_dl_kwargs</span><span class="p">[</span><span class="s1">&#39;persistent_workers&#39;</span><span class="p">]</span><span class="si">!s:</span><span class="s2">&lt;5</span><span class="si">}</span><span class="s2">                                               │</span>
+<span class="s2">│  Train:        shuffle=True,  drop_last=True                           │</span>
+<span class="s2">│  Val/Test:     shuffle=False, drop_last=False                          │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  TENSORES DE SALIDA                                                    │</span>
+<span class="s2">├────────────────────────────────────────────────────────────────────────┤</span>
+<span class="s2">│  Imagen:  (B, 1, </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">) float32 ∈ [0, 1]                     │</span>
+<span class="s2">│  Máscara: (B, 1, </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">IMG_SIZE</span><span class="si">}</span><span class="s2">) float32 ∈ </span><span class="se">{{</span><span class="s2">0, 1</span><span class="se">}}</span><span class="s2">                    │</span>
+<span class="s2">│  Metadatos: tumor_label, plane_label, filename, plane_idx              │</span>
+<span class="s2">└────────────────────────────────────────────────────────────────────────┘</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># ── Guardado de splits ───────────────────────────────────────</span>
+<span class="n">df_train</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SPLITS_DIR</span><span class="p">,</span> <span class="s1">&#39;split_train.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df_val</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SPLITS_DIR</span><span class="p">,</span> <span class="s1">&#39;split_val.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df_test</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SPLITS_DIR</span><span class="p">,</span> <span class="s1">&#39;split_test.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SPLITS_DIR</span><span class="p">,</span> <span class="s1">&#39;df_master.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataFrames de splits guardados en: </span><span class="si">{</span><span class="n">SPLITS_DIR</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  • split_train.csv (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_train</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  • split_val.csv   (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_val</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  • split_test.csv  (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  • df_master.csv   (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> filas)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>========================================================================
+RESUMEN DEL PIPELINE DE PREPROCESAMIENTO
+========================================================================
+
+┌────────────────────────────────────────────────────────────────────────┐
+│  PARTICIONES                                                          │
+├────────────────────────────────────────────────────────────────────────┤
+│  Train:        3146 imágenes  (65.6%)  [Con augmentación]        │
+│  Validation:    787 imágenes  (16.4%)  [Sin augmentación]        │
+│  Test:          860 imágenes  (17.9%)  [Sin augmentación]        │
+│  Total:        4793 imágenes                                          │
+├────────────────────────────────────────────────────────────────────────┤
+│  PREPROCESAMIENTO BASE (todos los splits)                              │
+├────────────────────────────────────────────────────────────────────────┤
+│  1. Conversión a escala de grises (1 canal)                            │
+│  2. Re-escalado de intensidades a [0, 1]                               │
+│  3. Resize a 512×512 (BICUBIC)                                 │
+│  4. Clamp de seguridad a [0, 1]                                        │
+│  5. Binarización de máscara (umbral &gt; 0.5)                             │
+│  6. Conversión a tensor PyTorch (float32)                              │
+├────────────────────────────────────────────────────────────────────────┤
+│  AUGMENTACIÓN (solo train)                                             │
+├────────────────────────────────────────────────────────────────────────┤
+│  • HorizontalFlip (p=0.5)                                              │
+│  • ShiftScaleRotate (p=0.30)                                           │
+│  • RandomBrightnessContrast (p=0.25)                                   │
+│  • GaussNoise (p=0.15)                                                 │
+├────────────────────────────────────────────────────────────────────────┤
+│  DATALOADERS                                                           │
+├────────────────────────────────────────────────────────────────────────┤
+│  Batch size:          16                                                  │
+│  Num workers:         4                                                   │
+│  Pin memory:          False                                               │
+│  Persistent workers:  True                                                │
+│  Train:        shuffle=True,  drop_last=True                           │
+│  Val/Test:     shuffle=False, drop_last=False                          │
+├────────────────────────────────────────────────────────────────────────┤
+│  TENSORES DE SALIDA                                                    │
+├────────────────────────────────────────────────────────────────────────┤
+│  Imagen:  (B, 1, 512, 512) float32 ∈ [0, 1]                     │
+│  Máscara: (B, 1, 512, 512) float32 ∈ {0, 1}                    │
+│  Metadatos: tumor_label, plane_label, filename, plane_idx              │
+└────────────────────────────────────────────────────────────────────────┘
+
+DataFrames de splits guardados en: /content/drive/MyDrive/tumores_ceb_proyecto/splits
+  • split_train.csv (3146 filas)
+  • split_val.csv   (787 filas)
+  • split_test.csv  (860 filas)
+  • df_master.csv   (4793 filas)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Con el guardado de estos artefactos, el proyecto BRISC-SEG ha establecido una línea base de datos inmaculada. Se ha transformado un dataset nativamente heterogéneo en un flujo de tensores estandarizado a <span class="math notranslate nohighlight">\(512 \times 512\)</span>, con normalización local y un pipeline de augmentación que induce variabilidad sin comprometer la anatomía. La inmutabilidad de los splits garantizada por los archivos <code class="docutils literal notranslate"><span class="pre">.csv</span></code> asegura que la búsqueda del <strong>Weighted mIoU objetivo (&gt;80.6%)</strong> se realice con el máximo rigor metodológico, permitiendo que el foco de la investigación se desplace ahora hacia la optimización de la arquitectura.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="eda.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>3. Analisis exploratorio de datos</strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="benchmarks.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>5. Benchmarks de Segmentación</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-del-entorno-y-dependencias">4.1 Configuración del Entorno y Dependencias</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#carga-del-dataset-y-definicion-de-rutas">4.2 Carga del Dataset y Definición de Rutas</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diseno-del-pipeline-de-transformaciones-y-augmentacion">4.3 Diseño del Pipeline de Transformaciones y Augmentación</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#justificacion-metodologica-de-las-augmentaciones">Justificación Metodológica de las Augmentaciones</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orquestacion-de-datos-clase-briscsegdataset">4.4 Orquestación de Datos: Clase <code class="docutils literal notranslate"><span class="pre">BRISCSegDataset</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#particion-de-datos-estratificacion-multivariable">4.5 Partición de Datos: Estratificación Multivariable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instanciacion-de-datasets-y-configuracion-de-dataloaders">4.6 Instanciación de Datasets y Configuración de DataLoaders</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#protocolo-de-validacion-del-pipeline-de-datos">4.7 Protocolo de Validación del Pipeline de Datos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validacion-cualitativa-robustez-del-pipeline-de-augmentacion">4.7.2 Validación Cualitativa: Robustez del Pipeline de Augmentación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspeccion-de-tensores-en-tiempo-de-ejecucion-batch-monitoring">4.7.3 Inspección de Tensores en Tiempo de Ejecución (Batch Monitoring)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auditoria-estadistica-post-procesamiento">4.8 Auditoría Estadística Post-procesamiento</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#consolidacion-de-la-infraestructura-de-datos-y-persistencia-de-splits">4.9 Consolidación de la Infraestructura de Datos y Persistencia de Splits</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luis D. Peñaranda Pérez · Johan D. López · David R. Márquez · Cristian C. Linero
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

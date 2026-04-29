@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>2. Revisión de Literatura &#8212; Brain Tumor Segmentation in MRI — BRISC 2025</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'revision_literatura';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. Analisis exploratorio de datos" href="eda.html" />
+    <link rel="prev" title="1. Introducción" href="introduccion.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/Logo.png" class="logo__image only-light" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>
+    <script>document.write(`<img src="_static/Logo.png" class="logo__image only-dark" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Segmentación de Tumores Cerebrales en MRI mediante Aprendizaje Profundo
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html"><strong>1. Introducción</strong></a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>2. Revisión de Literatura</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="eda.html"><strong>3. Analisis exploratorio de datos</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocesamiento.html"><strong>4. Preprocesamiento y Diseño de DataLoaders</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html"><strong>5. Benchmarks de Segmentación</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="referencias_bibliograficas.html"><strong>Referencias</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025/issues/new?title=Issue%20on%20page%20%2Frevision_literatura.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/revision_literatura.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>2. Revisión de Literatura</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evolucion-de-los-metodos-de-segmentacion-en-imagen-medica">2.1 Evolución de los Métodos de Segmentación en Imagen Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#u-net-y-sus-variantes-el-paradigma-encoder-decoder">2.2 U-Net y sus Variantes: El Paradigma Encoder-Decoder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mecanismos-de-atencion-en-redes-convolucionales">2.3 Mecanismos de Atención en Redes Convolucionales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vision-transformers-en-segmentacion-medica">2.4 Vision Transformers en Segmentación Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estado-del-arte-en-segmentacion-de-tumores-cerebrales">2.5 Estado del Arte en Segmentación de Tumores Cerebrales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trabajos-recientes-sobre-el-dataset-brisc-2025">2.6 Trabajos Recientes sobre el Dataset BRISC 2025</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desplazamiento-de-dominio-en-imagen-medica">2.7 Desplazamiento de Dominio en Imagen Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-de-los-datasets-existentes-y-la-propuesta-brisc">2.8 Limitaciones de los Datasets Existentes y la Propuesta BRISC</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sintesis-y-posicionamiento-del-presente-trabajo">2.9 Síntesis y Posicionamiento del Presente Trabajo</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="revision-de-literatura">
+<h1><strong>2. Revisión de Literatura</strong><a class="headerlink" href="#revision-de-literatura" title="Permalink to this heading">#</a></h1>
+<section id="evolucion-de-los-metodos-de-segmentacion-en-imagen-medica">
+<h2>2.1 Evolución de los Métodos de Segmentación en Imagen Médica<a class="headerlink" href="#evolucion-de-los-metodos-de-segmentacion-en-imagen-medica" title="Permalink to this heading">#</a></h2>
+<p>La segmentación de imágenes médicas ha evolucionado significativamente durante la última
+década, pasando de enfoques basados en características artesanales (<em>handcrafted features</em>)
+hacia arquitecturas de aprendizaje profundo capaces de extraer representaciones jerárquicas
+directamente desde los datos. Esta transición fue impulsada en gran medida por la introducción
+de las Redes Neuronales Convolucionales (CNN) como estándar de facto en visión por
+computadora, y posteriormente por la emergencia de los Vision Transformers como alternativa
+capaz de capturar dependencias globales de largo alcance <a href="#id1"><span class="problematic" id="id2">nawaz2025review</span></a>.</p>
+<p>En el contexto específico de tumores cerebrales, la literatura reporta un avance sostenido
+desde métodos clásicos de segmentación basados en umbrales y crecimiento de regiones, pasando
+por enfoques de Machine Learning con SVM y Random Forest, hasta los modelos de Deep Learning
+actuales que dominan los benchmarks en los principales desafíos del área como BraTS
+<a href="#id3"><span class="problematic" id="id4">menze2014multimodal</span></a>.</p>
+</section>
+<hr class="docutils" />
+<section id="u-net-y-sus-variantes-el-paradigma-encoder-decoder">
+<h2>2.2 U-Net y sus Variantes: El Paradigma Encoder-Decoder<a class="headerlink" href="#u-net-y-sus-variantes-el-paradigma-encoder-decoder" title="Permalink to this heading">#</a></h2>
+<p>La arquitectura U-Net, propuesta por Ronneberger et al. <a href="#id5"><span class="problematic" id="id6">ronneberger2015unet</span></a>, estableció
+en 2015 el paradigma que define la segmentación médica moderna. Su diseño encoder-decoder
+simétrico con conexiones de salto (<em>skip connections</em>) resuelve el problema fundamental de
+la segmentación semántica densa: preservar la información espacial de alta resolución mientras
+se extrae contexto semántico en profundidad. La simplicidad de su diseño, combinada con su
+capacidad de entrenarse con conjuntos de datos reducidos gracias al uso extensivo de
+augmentación de datos, la convirtió rápidamente en la arquitectura de referencia en imagen
+médica.</p>
+<p>Una de las extensiones más influyentes de U-Net fue Attention U-Net, propuesta por Oktay et
+al. <a href="#id7"><span class="problematic" id="id8">oktay2018attention</span></a>. Esta variante introduce puertas de atención (<em>attention gates</em>)
+en las conexiones de salto, lo que permite al modelo aprender implícitamente a suprimir
+activaciones irrelevantes y enfocarse en las regiones de interés sin requerir módulos externos
+de localización. En la tarea de segmentación de páncreas en CT — uno de los problemas más
+difíciles en imagen médica por la variabilidad morfológica del órgano — Attention U-Net
+demostró mejoras consistentes sobre U-Net estándar manteniendo eficiencia computacional. Este
+mecanismo de atención en skip connections es directamente relevante para nuestro problema,
+dado que los tumores cerebrales presentan morfologías igualmente variables e irregulares.</p>
+</section>
+<hr class="docutils" />
+<section id="mecanismos-de-atencion-en-redes-convolucionales">
+<h2>2.3 Mecanismos de Atención en Redes Convolucionales<a class="headerlink" href="#mecanismos-de-atencion-en-redes-convolucionales" title="Permalink to this heading">#</a></h2>
+<p>Más allá de las puertas de atención en skip connections, la literatura ha explorado módulos
+de atención aplicados directamente sobre los mapas de características del encoder. El módulo
+CBAM (<em>Convolutional Block Attention Module</em>) combina atención de canal y atención espacial
+de forma secuencial, permitiendo al modelo recalibrar tanto qué características son relevantes
+como dónde se ubican en la imagen <a href="#id9"><span class="problematic" id="id10">woo2018cbam</span></a>. Este tipo de atención ligera ha
+demostrado mejoras consistentes en tareas de clasificación y segmentación con un costo
+computacional marginal.</p>
+<p>En el contexto de tumores cerebrales, Prayogo et al. <a href="#id11"><span class="problematic" id="id12">prayogo2026hayabusanet</span></a> propusieron
+HayabusaNet, una arquitectura de clasificación que integra un módulo de atención híbrida
+combinando CBAM para prominencia local y mecanismos de self-attention para contexto global.
+Aunque su tarea es clasificación y no segmentación, los resultados demuestran que la
+combinación de atención local y global es beneficiosa para discriminar entre tipos tumorales
+con morfologías variables, lo que fundamenta su aplicación dentro de arquitecturas encoder-decoder
+para segmentación.</p>
+</section>
+<hr class="docutils" />
+<section id="vision-transformers-en-segmentacion-medica">
+<h2>2.4 Vision Transformers en Segmentación Médica<a class="headerlink" href="#vision-transformers-en-segmentacion-medica" title="Permalink to this heading">#</a></h2>
+<p>La introducción de los Transformers en visión por computadora abrió una nueva era en
+segmentación médica. A diferencia de las CNN, cuyas operaciones de convolución tienen una
+receptividad local inherente, los Transformers modelan dependencias entre todos los píxeles
+o parches de la imagen simultáneamente a través de mecanismos de autoatención, lo que
+les permite capturar contexto global desde las primeras capas del modelo.</p>
+<p>TransUNet, propuesto por Chen et al. <a href="#id13"><span class="problematic" id="id14">chen2021transunet</span></a>, fue uno de los primeros trabajos
+en integrar Vision Transformers en una arquitectura de segmentación médica. Su diseño híbrido
+utiliza una CNN para extraer mapas de características de alta resolución, que luego son
+tokenizados y procesados por un encoder basado en ViT para capturar contexto global. El decoder,
+inspirado en U-Net, combina las características codificadas por el Transformer con las
+características CNN de alta resolución mediante skip connections, logrando localización precisa.
+TransUNet ha demostrado rendimiento superior en tareas de segmentación multi-órgano y
+cardíaca, y su versión 3D publicada en Medical Image Analysis en 2024 supera a nnUNet en la
+mayoría de benchmarks evaluados <a href="#id15"><span class="problematic" id="id16">chen2024transunet</span></a>.</p>
+<p>Swin-UNet <a href="#id17"><span class="problematic" id="id18">cao2022swinunet</span></a> llevó este paradigma un paso más allá al proponer la
+primera arquitectura de segmentación médica basada puramente en Transformers, sin ningún
+componente convolucional. Utilizando el Swin Transformer jerárquico con ventanas desplazadas
+como encoder, y un decoder simétrico también basado en Swin Transformer con una capa de
+expansión de parches para el upsampleo, Swin-UNet demuestra que una red U-shaped basada
+puramente en Transformers puede superar a métodos con convolución completa o combinación de
+Transformer y convolución en tareas de segmentación multi-órgano y cardíaca.</p>
+</section>
+<hr class="docutils" />
+<section id="estado-del-arte-en-segmentacion-de-tumores-cerebrales">
+<h2>2.5 Estado del Arte en Segmentación de Tumores Cerebrales<a class="headerlink" href="#estado-del-arte-en-segmentacion-de-tumores-cerebrales" title="Permalink to this heading">#</a></h2>
+<p>La segmentación de tumores cerebrales ha sido impulsada históricamente por el desafío BraTS
+(<em>Brain Tumor Segmentation</em>), organizado anualmente desde 2012 por la sociedad MICCAI
+<a href="#id19"><span class="problematic" id="id20">menze2014multimodal</span></a>. BraTS se enfoca principalmente en gliomas y utiliza imágenes
+multimodales (T1, T1-CE, T2, FLAIR) en formato 3D. Los mejores modelos en BraTS han
+alcanzado Dice scores superiores a 0.90 para tumor completo, con arquitecturas híbridas
+CNN-Transformer dominando los rankings más recientes <a href="#id21"><span class="problematic" id="id22">nawaz2025review</span></a>.</p>
+<p>Sin embargo, la literatura presenta limitaciones importantes que motivan el presente trabajo.
+Primero, la mayoría de estudios se enfocan en gliomas de alto grado, dejando subrepresentados
+los meningiomas y tumores hipofisarios <a href="#id23"><span class="problematic" id="id24">nawaz2025review</span></a>. Segundo, los datasets más
+usados — BraTS, Figshare, datasets de Kaggle — presentan problemas de desbalance de clases,
+inconsistencias en anotaciones o falta de diversidad en condiciones de adquisición
+<a href="#id25"><span class="problematic" id="id26">fateh2026brisc</span></a>. Tercero, y más relevante para este trabajo, prácticamente ningún estudio
+analiza el rendimiento de segmentación de forma desagregada por plano anatómico de adquisición
+(axial, coronal, sagital) en imágenes 2D de MRI T1, a pesar de que la morfología tumoral
+percibida varía considerablemente entre planos.</p>
+<p>Una revisión reciente publicada en npj Precision Oncology ofrece un panorama comprehensivo
+del estado del arte en análisis de tumores cerebrales con Deep Learning, concluyendo que los
+modelos más robustos son aquellos que integran mecanismos de atención multi-escala capaces
+de adaptarse a la alta variabilidad morfológica inter-paciente e inter-tipo tumoral
+<a href="#id27"><span class="problematic" id="id28">elhalawani2025review</span></a>. Esta conclusión es consistente con la hipótesis de nuestro
+trabajo.</p>
+</section>
+<hr class="docutils" />
+<section id="trabajos-recientes-sobre-el-dataset-brisc-2025">
+<h2>2.6 Trabajos Recientes sobre el Dataset BRISC 2025<a class="headerlink" href="#trabajos-recientes-sobre-el-dataset-brisc-2025" title="Permalink to this heading">#</a></h2>
+<p>Desde su publicación, el dataset BRISC ha atraído varios trabajos que lo utilizan principalmente
+para tareas de clasificación. Bindemann y Schanze <a href="#id29"><span class="problematic" id="id30">bindemann2026search</span></a> realizaron una
+exploración sistemática de 682 configuraciones de CNN sobre BRISC, demostrando que modelos
+con la mitad de parámetros pueden alcanzar precisiones comparables a arquitecturas más pesadas,
+con un máximo de 0.985 en clasificación. En una línea similar, Prabhakar y Swamy
+<a href="#id31"><span class="problematic" id="id32">prabhakar2026deep</span></a> evaluaron CNNs personalizadas con pipelines robustos de preprocesamiento
+sobre BRISC, identificando que arquitecturas ligeras como EfficientNet-b0 alcanzan precisiones
+superiores al 98% en clasificación multiclase.</p>
+<p>Es importante destacar que estos trabajos abordan clasificación a nivel de imagen, una tarea
+fundamentalmente distinta a la segmentación pixel a pixel que es el objeto del presente
+proyecto. La ausencia de estudios de segmentación con análisis por plano anatómico sobre BRISC
+confirma el gap que este trabajo se propone cubrir.</p>
+</section>
+<hr class="docutils" />
+<section id="desplazamiento-de-dominio-en-imagen-medica">
+<h2>2.7 Desplazamiento de Dominio en Imagen Médica<a class="headerlink" href="#desplazamiento-de-dominio-en-imagen-medica" title="Permalink to this heading">#</a></h2>
+<p>Un desafío relevante identificado durante el análisis exploratorio de datos de este proyecto
+es la presencia de un desplazamiento de distribución estadísticamente significativo entre los
+conjuntos de entrenamiento y prueba de BRISC. Esta observación está respaldada por la
+literatura más reciente sobre imagen médica con Deep Learning.</p>
+<p>Kakon et al. <a href="#id33"><span class="problematic" id="id34">kakon2026improving</span></a> demostraron que los modelos de análisis de MRI sufren
+degradaciones en su rendimiento cuando se enfrentan a variaciones en los protocolos de
+adquisición o en las características de los equipos, proponiendo un marco de regularización
+de estabilidad en el espacio de características (<em>Feature Space Stability Regularization</em>)
+como estrategia de mitigación. En un marco más amplio, Musa et al. <a href="#id35"><span class="problematic" id="id36">musa2026systematic</span></a>
+realizaron una revisión sistemática de los desplazamientos entre poblaciones en imagen médica
+con Deep Learning, identificando que la variación en condiciones de adquisición y
+características demográficas representa el principal obstáculo para la generalización de los
+modelos. Ambos trabajos sustentan la importancia de reportar y discutir el comportamiento del
+modelo bajo las condiciones de evaluación real del dataset, incluyendo las diferencias de
+distribución entre splits, como se analiza en este proyecto.</p>
+</section>
+<hr class="docutils" />
+<section id="limitaciones-de-los-datasets-existentes-y-la-propuesta-brisc">
+<h2>2.8 Limitaciones de los Datasets Existentes y la Propuesta BRISC<a class="headerlink" href="#limitaciones-de-los-datasets-existentes-y-la-propuesta-brisc" title="Permalink to this heading">#</a></h2>
+<p>La calidad y características de los datasets de entrenamiento son tan determinantes para el
+rendimiento de los modelos como las propias arquitecturas. Los principales datasets públicos
+para segmentación de tumores cerebrales presentan limitaciones documentadas que BRISC fue
+diseñado para superar <a href="#id37"><span class="problematic" id="id38">fateh2026brisc</span></a>.</p>
+<p>BraTS depende de datos preprocesados y estandarizados que pueden no reflejar la variabilidad
+real en protocolos de adquisición clínica, y se enfoca exclusivamente en gliomas, limitando
+la generalización a otros tipos tumorales <a href="#id39"><span class="problematic" id="id40">menze2014multimodal</span></a>. El dataset Cheng
+(<em>Figshare</em>) sufre de desbalance de clases y diversidad limitada en condiciones de imagen.
+Muchos datasets de Kaggle ampliamente utilizados presentan inconsistencias en las anotaciones
+que afectan negativamente el entrenamiento <a href="#id41"><span class="problematic" id="id42">fateh2026brisc</span></a>.</p>
+<p>BRISC aborda estas limitaciones ofreciendo 6.000 imágenes MRI T1 con contraste, con
+distribución balanceada entre cuatro clases — glioma, meningioma, pituitary y no-tumoral —
+y tres planos anatómicos, con máscaras de segmentación pixel a pixel validadas por radiólogos
+y médicos certificados. El coeficiente Dice de 0.924 entre anotaciones iniciales y verificadas
+por expertos establece un estándar de calidad superior al de la mayoría de datasets públicos
+disponibles <a href="#id43"><span class="problematic" id="id44">fateh2026brisc</span></a>. Su publicación en Scientific Data (Nature Portfolio) en
+2026 lo posiciona como el dataset de referencia más reciente y riguroso para esta tarea.</p>
+</section>
+<hr class="docutils" />
+<section id="sintesis-y-posicionamiento-del-presente-trabajo">
+<h2>2.9 Síntesis y Posicionamiento del Presente Trabajo<a class="headerlink" href="#sintesis-y-posicionamiento-del-presente-trabajo" title="Permalink to this heading">#</a></h2>
+<p>La revisión de la literatura permite identificar con claridad el espacio de contribución de
+este trabajo. Desde el punto de vista arquitectónico, el paradigma híbrido CNN-Transformer
+con mecanismos de atención multi-escala representa el estado del arte más prometedor para
+segmentación de tumores cerebrales en imágenes 2D de MRI T1 <a href="#id45"><span class="problematic" id="id46">chen2021transunet</span></a>,
+<a href="#id47"><span class="problematic" id="id48">cao2022swinunet</span></a>. Los módulos de atención de canal y espacial, como CBAM, han
+demostrado su utilidad en el contexto de tumores cerebrales con morfología variable
+<a href="#id49"><span class="problematic" id="id50">woo2018cbam</span></a>, <a href="#id51"><span class="problematic" id="id52">prayogo2026hayabusanet</span></a>. Desde el punto de vista de datos, BRISC
+2025 ofrece el conjunto de referencia más completo y riguroso disponible para esta tarea
+<a href="#id53"><span class="problematic" id="id54">fateh2026brisc</span></a>. Y desde el punto de vista analítico, el análisis de rendimiento
+desagregado por plano anatómico representa un gap real en la literatura que este trabajo se
+propone cubrir, documentado tanto por la ausencia de dicho análisis en los trabajos existentes
+sobre BRISC como por la evidencia de desplazamiento de dominio entre splits <a href="#id55"><span class="problematic" id="id56">kakon2026improving</span></a>,
+<a href="#id57"><span class="problematic" id="id58">musa2026systematic</span></a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="introduccion.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>1. Introducción</strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="eda.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>3. Analisis exploratorio de datos</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evolucion-de-los-metodos-de-segmentacion-en-imagen-medica">2.1 Evolución de los Métodos de Segmentación en Imagen Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#u-net-y-sus-variantes-el-paradigma-encoder-decoder">2.2 U-Net y sus Variantes: El Paradigma Encoder-Decoder</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mecanismos-de-atencion-en-redes-convolucionales">2.3 Mecanismos de Atención en Redes Convolucionales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vision-transformers-en-segmentacion-medica">2.4 Vision Transformers en Segmentación Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#estado-del-arte-en-segmentacion-de-tumores-cerebrales">2.5 Estado del Arte en Segmentación de Tumores Cerebrales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trabajos-recientes-sobre-el-dataset-brisc-2025">2.6 Trabajos Recientes sobre el Dataset BRISC 2025</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#desplazamiento-de-dominio-en-imagen-medica">2.7 Desplazamiento de Dominio en Imagen Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-de-los-datasets-existentes-y-la-propuesta-brisc">2.8 Limitaciones de los Datasets Existentes y la Propuesta BRISC</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sintesis-y-posicionamiento-del-presente-trabajo">2.9 Síntesis y Posicionamiento del Presente Trabajo</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luis D. Peñaranda Pérez · Johan D. López · David R. Márquez · Cristian C. Linero
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

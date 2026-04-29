@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>1. Introducción &#8212; Brain Tumor Segmentation in MRI — BRISC 2025</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'introduccion';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Revisión de Literatura" href="revision_literatura.html" />
+    <link rel="prev" title="Segmentación de Tumores Cerebrales en MRI mediante Aprendizaje Profundo" href="intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/Logo.png" class="logo__image only-light" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>
+    <script>document.write(`<img src="_static/Logo.png" class="logo__image only-dark" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Segmentación de Tumores Cerebrales en MRI mediante Aprendizaje Profundo
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><strong>1. Introducción</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="revision_literatura.html"><strong>2. Revisión de Literatura</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="eda.html"><strong>3. Analisis exploratorio de datos</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocesamiento.html"><strong>4. Preprocesamiento y Diseño de DataLoaders</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html"><strong>5. Benchmarks de Segmentación</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="referencias_bibliograficas.html"><strong>Referencias</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025/issues/new?title=Issue%20on%20page%20%2Fintroduccion.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/introduccion.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>1. Introducción</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contexto-clinico">1.1 Contexto Clínico</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-rol-de-la-resonancia-magnetica-y-sus-limitaciones-actuales">1.2 El Rol de la Resonancia Magnética y sus Limitaciones Actuales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-problema-de-la-segmentacion-automatizada">1.3 El Problema de la Segmentación Automatizada</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#avances-en-deep-learning-para-segmentacion-medica">1.4 Avances en Deep Learning para Segmentación Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gap-en-la-literatura-y-motivacion">1.5 Gap en la Literatura y Motivación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objetivos">1.6 Objetivos</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="introduccion">
+<h1><strong>1. Introducción</strong><a class="headerlink" href="#introduccion" title="Permalink to this heading">#</a></h1>
+<section id="contexto-clinico">
+<h2>1.1 Contexto Clínico<a class="headerlink" href="#contexto-clinico" title="Permalink to this heading">#</a></h2>
+<p>Los tumores cerebrales se encuentran entre las condiciones médicas más críticas a nivel mundial,
+con una incidencia estimada de 308.102 nuevos casos y 251.329 muertes reportadas globalmente
+en 2020, según datos de la Organización Mundial de la Salud. Su impacto en la expectativa y
+calidad de vida de los pacientes es severo, particularmente en los tumores malignos de alto
+grado como el glioblastoma, cuya tasa de supervivencia a cinco años no supera el 5%. La
+detección temprana y la caracterización precisa del tumor son determinantes en el pronóstico
+del paciente, ya que permiten planificar intervenciones quirúrgicas, radioterapia y
+quimioterapia de forma oportuna y personalizada <a href="#id1"><span class="problematic" id="id2">mcfaline2018brain</span></a>.</p>
+<p>Los tumores cerebrales se clasifican en primarios, cuando se originan en células del propio
+cerebro, y secundarios o metastásicos, cuando provienen de otros órganos. Entre los primarios,
+el glioma representa el 78% de los tumores malignos en adultos, mientras que el meningioma es
+el tipo benigno más frecuente. El tumor hipofisario, aunque generalmente benigno, puede afectar
+significativamente funciones endocrinas y visuales. La clasificación de la Organización Mundial
+de la Salud estratifica estos tumores en cuatro grados según su tasa de crecimiento, malignidad
+y capacidad invasiva, lo que determina directamente el protocolo de tratamiento
+<a href="#id3"><span class="problematic" id="id4">deangelis2001brain</span></a>.</p>
+</section>
+<hr class="docutils" />
+<section id="el-rol-de-la-resonancia-magnetica-y-sus-limitaciones-actuales">
+<h2>1.2 El Rol de la Resonancia Magnética y sus Limitaciones Actuales<a class="headerlink" href="#el-rol-de-la-resonancia-magnetica-y-sus-limitaciones-actuales" title="Permalink to this heading">#</a></h2>
+<figure class="align-center" id="fig-tumores-cerebrales">
+<a class="reference internal image-reference" href="_images/imagen_3.png"><img alt="_images/imagen_3.png" src="_images/imagen_3.png" style="width: 700px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Segmentación manual frente a segmentación automatizada de tumores cerebrales.</span><a class="headerlink" href="#fig-tumores-cerebrales" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>La Resonancia Magnética (MRI) es el estándar de oro en el diagnóstico y monitoreo de tumores
+cerebrales, gracias a su capacidad de generar imágenes de alta resolución de las estructuras
+cerebrales de forma no invasiva y sin radiación ionizante. Las imágenes ponderadas en T1 con
+contraste, en particular, destacan con precisión los límites del tumor al realzar las regiones
+con ruptura de la barrera hematoencefálica, característica distintiva de los tumores de alto
+grado <a href="#id5"><span class="problematic" id="id6">fateh2026brisc</span></a>.</p>
+<p>Sin embargo, el análisis manual de estas imágenes por parte de radiólogos y neurólogos es un
+proceso altamente demandante en tiempo y sujeto a variabilidad inter-observador. Un estudio
+completo de MRI cerebral puede contener cientos de cortes en múltiples planos anatómicos, y la
+delineación manual del volumen tumoral — necesaria para planificación quirúrgica y radioterapia —
+puede tomar entre una y cuatro horas por paciente. Esta realidad, combinada con la escasez de
+especialistas en muchas regiones del mundo, crea una necesidad urgente de sistemas automatizados
+que asistan en la detección, localización y segmentación de tumores cerebrales
+<a href="#id7"><span class="problematic" id="id8">menze2014multimodal</span></a>.</p>
+</section>
+<hr class="docutils" />
+<section id="el-problema-de-la-segmentacion-automatizada">
+<h2>1.3 El Problema de la Segmentación Automatizada<a class="headerlink" href="#el-problema-de-la-segmentacion-automatizada" title="Permalink to this heading">#</a></h2>
+<figure class="align-center" id="fig-segmentacion">
+<a class="reference internal image-reference" href="_images/imagen_1.png"><img alt="_images/imagen_1.png" src="_images/imagen_1.png" style="width: 700px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Flujo de trabajo de segmentación de tumores cerebrales. De izquierda a derecha: resonancia
+magnética T2-FLAIR original, máscara de segmentación de referencia y superposición de la
+predicción del modelo.</span><a class="headerlink" href="#fig-segmentacion" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>La segmentación automática de tumores cerebrales en MRI es un problema de visión por
+computadora que consiste en asignar una etiqueta a cada píxel de la imagen, distinguiendo el
+tejido tumoral del tejido cerebral sano. A diferencia de la clasificación a nivel de imagen,
+la segmentación exige que el modelo comprenda tanto el contexto global de la imagen como los
+detalles locales a nivel de píxel, lo que representa un reto técnico considerablemente mayor
+<a href="#id9"><span class="problematic" id="id10">fateh2026brisc</span></a>.</p>
+<p>Las principales dificultades de este problema incluyen la alta variabilidad morfológica de los
+tumores, cuya forma, tamaño y localización difieren significativamente entre pacientes y tipos
+tumorales; la irregularidad en el contraste y la intensidad de señal en las regiones tumorales;
+la similitud visual entre tejido tumoral y estructuras sanas adyacentes; y la presencia de
+artefactos de adquisición propios del entorno clínico. Estas características hacen que los
+modelos entrenados en condiciones controladas enfrenten desafíos importantes al ser aplicados
+en escenarios reales <a href="#id11"><span class="problematic" id="id12">menze2014multimodal</span></a>, <a href="#id13"><span class="problematic" id="id14">musa2026systematic</span></a>.</p>
+</section>
+<hr class="docutils" />
+<section id="avances-en-deep-learning-para-segmentacion-medica">
+<h2>1.4 Avances en Deep Learning para Segmentación Médica<a class="headerlink" href="#avances-en-deep-learning-para-segmentacion-medica" title="Permalink to this heading">#</a></h2>
+<p>En la última década, el aprendizaje profundo ha transformado el campo de la segmentación de
+imágenes médicas. La arquitectura U-Net, propuesta por Ronneberger et al. en 2015, estableció
+el paradigma encoder-decoder con conexiones de salto que se convirtió en el estándar de
+referencia para segmentación médica <a href="#id15"><span class="problematic" id="id16">ronneberger2015unet</span></a>. Desde entonces, variantes como
+Attention U-Net, que incorpora mecanismos de atención en las conexiones de salto
+<a href="#id17"><span class="problematic" id="id18">oktay2018attention</span></a>, y arquitecturas híbridas como TransUNet <a href="#id19"><span class="problematic" id="id20">chen2021transunet</span></a>
+y Swin-UNet <a href="#id21"><span class="problematic" id="id22">cao2022swinunet</span></a>, que integran Vision Transformers para capturar dependencias
+de largo alcance, han demostrado mejoras progresivas en benchmarks establecidos. De forma
+paralela, módulos de atención ligeros como CBAM <a href="#id23"><span class="problematic" id="id24">woo2018cbam</span></a> han permitido incorporar
+recalibración de características de canal y espacial sin incrementar sustancialmente el costo
+computacional, con resultados prometedores en tareas de análisis de tumores cerebrales
+<a href="#id25"><span class="problematic" id="id26">prayogo2026hayabusanet</span></a>.</p>
+<p>No obstante, el progreso en este campo ha estado limitado en parte por la disponibilidad de
+datasets de alta calidad. Colecciones ampliamente usadas como el dataset Cheng o los datasets
+de Kaggle presentan problemas de desbalance de clases, inconsistencias en las anotaciones y
+falta de diversidad en las condiciones de adquisición. El dataset BraTS, aunque comprehensivo,
+se enfoca exclusivamente en gliomas y utiliza datos preprocesados que no reflejan la
+variabilidad real del entorno clínico <a href="#id27"><span class="problematic" id="id28">menze2014multimodal</span></a>. Estas limitaciones
+restringen la generalización de los modelos desarrollados sobre ellos <a href="#id29"><span class="problematic" id="id30">fateh2026brisc</span></a>.</p>
+</section>
+<hr class="docutils" />
+<section id="gap-en-la-literatura-y-motivacion">
+<h2>1.5 Gap en la Literatura y Motivación<a class="headerlink" href="#gap-en-la-literatura-y-motivacion" title="Permalink to this heading">#</a></h2>
+<figure class="align-center" id="fig-planos">
+<a class="reference internal image-reference" href="_images/imagen_2.png"><img alt="_images/imagen_2.png" src="_images/imagen_2.png" style="width: 700px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Planos cerebrales ortogonales. Visualización de secciones axiales, coronales y sagitales.</span><a class="headerlink" href="#fig-planos" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>En este contexto, Fateh et al. presentaron en 2026 el dataset BRISC (BRain tumor Image
+Segmentation and Classification), publicado en Scientific Data de Nature Portfolio
+<a href="#id31"><span class="problematic" id="id32">fateh2026brisc</span></a>. BRISC aborda directamente las limitaciones de los datasets existentes
+al ofrecer 6.000 imágenes MRI T1 con contraste, distribuidas de forma balanceada entre cuatro
+clases — glioma, meningioma, tumor hipofisario y casos no tumorales — y tres planos anatómicos:
+axial, coronal y sagital. Las máscaras de segmentación pixel a pixel fueron anotadas y
+validadas por radiólogos y médicos certificados, con un coeficiente Dice de 0.924 entre
+anotaciones iniciales y verificadas por expertos <a href="#id33"><span class="problematic" id="id34">fateh2026brisc</span></a>.</p>
+<p>A pesar de que los propios autores de BRISC establecieron benchmarks con doce modelos de
+segmentación, identificamos dos gaps relevantes en su trabajo. Primero, el mejor modelo
+reportado — SaberNet — alcanzó un Weighted mIoU de 80.6%, dejando un margen de mejora
+significativo. Segundo, y más importante, ninguno de los benchmarks reportados analiza el
+rendimiento de segmentación desagregado por plano anatómico, a pesar de que BRISC cuenta con
+representación balanceada en los tres planos. Esta omisión es clínicamente relevante, dado que
+la morfología tumoral percibida varía considerablemente entre cortes axiales, coronales y
+sagitales, y un modelo robusto debería mantener rendimiento consistente independientemente del
+plano de adquisición <a href="#id35"><span class="problematic" id="id36">fateh2026brisc</span></a>. Adicionalmente, el análisis exploratorio de datos
+de este proyecto identificó un desplazamiento estadísticamente significativo en la distribución
+entre los conjuntos de entrenamiento y prueba del dataset, un fenómeno documentado en la
+literatura como un obstáculo real para la generalización de los modelos en imagen médica
+<a href="#id37"><span class="problematic" id="id38">kakon2026improving</span></a>, <a href="#id39"><span class="problematic" id="id40">musa2026systematic</span></a>.</p>
+</section>
+<hr class="docutils" />
+<section id="objetivos">
+<h2>1.6 Objetivos<a class="headerlink" href="#objetivos" title="Permalink to this heading">#</a></h2>
+<p><strong>Objetivo General</strong></p>
+<p>Desarrollar y evaluar una arquitectura de aprendizaje profundo para la segmentación
+píxel a píxel de tumores cerebrales en imágenes MRI T1 sobre el dataset BRISC
+2025, superando el Weighted mIoU de 80.6 % establecido por SaberNet como mejor
+modelo de referencia publicado</p>
+<p><strong>Objetivos Específicos</strong></p>
+<ol class="arabic simple">
+<li><p>Realizar un análisis exploratorio del dataset BRISC 2025 que caracterice la distribución de imágenes y máscaras por clase tumoral y plano anatómico.</p></li>
+<li><p>Implementar y evaluar cinco arquitecturas representativas de segmentación semántica
+sobre BRISC 2025, estableciendo líneas base de comparación bajo condiciones
+estandarizadas.</p></li>
+<li><p>Diseñar e implementar una arquitectura de segmentación original, fundamentada en revisión
+de literatura reciente, que incorpore mecanismos de atención de canal y espacial para
+mejorar la delimitación de regiones tumorales en imágenes MRI T1.</p></li>
+<li><p>Evaluar el rendimiento del modelo propuesto mediante métricas estándar (Weighted mIoU,
+Dice Score) desagregadas por tipo de tumor y por plano anatómico, comparándolo
+sistemáticamente con los modelos benchmark.</p></li>
+<li><p>Analizar la capacidad de generalización entre planos anatómicos de los modelos evaluados,
+identificando patrones de rendimiento diferencial entre los planos axial, coronal y sagital.</p></li>
+</ol>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><strong>Segmentación de Tumores Cerebrales en MRI mediante Aprendizaje Profundo</strong></p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="revision_literatura.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><strong>2. Revisión de Literatura</strong></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contexto-clinico">1.1 Contexto Clínico</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-rol-de-la-resonancia-magnetica-y-sus-limitaciones-actuales">1.2 El Rol de la Resonancia Magnética y sus Limitaciones Actuales</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#el-problema-de-la-segmentacion-automatizada">1.3 El Problema de la Segmentación Automatizada</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#avances-en-deep-learning-para-segmentacion-medica">1.4 Avances en Deep Learning para Segmentación Médica</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gap-en-la-literatura-y-motivacion">1.5 Gap en la Literatura y Motivación</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#objetivos">1.6 Objetivos</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luis D. Peñaranda Pérez · Johan D. López · David R. Márquez · Cristian C. Linero
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

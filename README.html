@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Brain Tumor Segmentation in MRI — BRISC 2025 &#8212; Brain Tumor Segmentation in MRI — BRISC 2025</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'README';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/Logo.png" class="logo__image only-light" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>
+    <script>document.write(`<img src="_static/Logo.png" class="logo__image only-dark" alt="Brain Tumor Segmentation in MRI — BRISC 2025 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Segmentación de Tumores Cerebrales en MRI mediante Aprendizaje Profundo
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduccion.html"><strong>1. Introducción</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="revision_literatura.html"><strong>2. Revisión de Literatura</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="eda.html"><strong>3. Analisis exploratorio de datos</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocesamiento.html"><strong>4. Preprocesamiento y Diseño de DataLoaders</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html"><strong>5. Benchmarks de Segmentación</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="referencias_bibliograficas.html"><strong>Referencias</strong></a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/luispenaranda08/brain-tumor-segmentation-brisc2025/issues/new?title=Issue%20on%20page%20%2FREADME.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/README.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Brain Tumor Segmentation in MRI — BRISC 2025</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-results">Key Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-brisc-2025">Dataset — BRISC 2025</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-results">Benchmark Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#weighted-miou-full-comparison-vs-brisc-2025-paper">Weighted mIoU — Full Comparison vs. BRISC 2025 Paper</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#original-contributions-not-reported-in-the-brisc-paper">Original Contributions — Not Reported in the BRISC Paper</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proposed-model-in-progress">Proposed Model — In Progress</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-configuration">Training Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-structure">Repository Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#team">Team</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="brain-tumor-segmentation-in-mri-brisc-2025">
+<h1>Brain Tumor Segmentation in MRI — BRISC 2025<a class="headerlink" href="#brain-tumor-segmentation-in-mri-brisc-2025" title="Permalink to this heading">#</a></h1>
+<blockquote>
+<div><p>Systematic benchmark of five deep learning segmentation architectures
+on BRISC 2025, with an original proposed model in progress.
+All five of our reproductions surpass the Weighted mIoU of the
+classical baselines reported in the dataset paper. Our best result
+— U-Net at <strong>80.94% W-mIoU</strong> — exceeds the previous state-of-the-art
+(SaberNet, 80.60%) under identical experimental conditions.</p>
+</div></blockquote>
+<p><img alt="Python" src="https://img.shields.io/badge/Python-3.10-blue?logo=python&amp;logoColor=white" />
+<img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&amp;logoColor=white" />
+<img alt="SMP" src="https://img.shields.io/badge/segmentation--models--pytorch-0.5.0-informational" />
+<img alt="GPU" src="https://img.shields.io/badge/GPU-NVIDIA%20A100%2080GB-76B900?logo=nvidia&amp;logoColor=white" />
+<img alt="Dataset" src="https://img.shields.io/badge/Dataset-BRISC%202025-blueviolet" />
+<img alt="JBook" src="https://img.shields.io/badge/Jupyter%20Book-published-orange" />
+<img alt="Lang" src="https://img.shields.io/badge/Notebook%20language-Spanish-yellow" /></p>
+<p>📖 <strong><a class="reference external" href="https://luispenaranda08.github.io/brain-tumor-segmentation-brisc2025">Read the full project documentation (Jupyter Book)</a></strong></p>
+<hr class="docutils" />
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
+<p>This project presents a pixel-wise segmentation study of brain tumors
+in T1 MRI images using <strong>BRISC 2025</strong> — a radiologist-annotated dataset
+covering glioma, meningioma, pituitary tumor, and non-tumor cases across
+three anatomical planes (Axial, Coronal, Sagittal).</p>
+<p>Five benchmark architectures were reproduced and evaluated under
+homogeneous training conditions. Building on the benchmark findings,
+we propose an original architecture — <strong>Res2Net-SE(2) UNet</strong> — designed
+to address the two main sources of variability identified in the analysis:
+inter-tumor morphological variability and anatomical-plane variability.
+Results for the proposed model are in progress.</p>
+<blockquote>
+<div><p><strong>Note:</strong> The Jupyter Book is currently written in Spanish.
+An English version will be available in a dedicated branch.</p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="key-results">
+<h2>Key Results<a class="headerlink" href="#key-results" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Metric</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Weighted mIoU</strong></p></td>
+<td><p><strong>80.94%</strong></p></td>
+<td><p>U-Net (Ours) — new SOTA</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dice Score (global)</p></td>
+<td><p>87.43%</p></td>
+<td><p>U-Net (Ours)</p></td>
+</tr>
+<tr class="row-even"><td><p>Best Meningioma IoU</p></td>
+<td><p>91.13%</p></td>
+<td><p>UNet++ (Ours)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Previous SOTA</p></td>
+<td><p>80.60%</p></td>
+<td><p>SaberNet — Fateh et al., 2026</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="dataset-brisc-2025">
+<h2>Dataset — BRISC 2025<a class="headerlink" href="#dataset-brisc-2025" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Split</p></th>
+<th class="head"><p>Images</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Train</p></td>
+<td><p>3,146</p></td>
+</tr>
+<tr class="row-odd"><td><p>Validation</p></td>
+<td><p>787</p></td>
+</tr>
+<tr class="row-even"><td><p>Test</p></td>
+<td><p>860</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Total</strong></p></td>
+<td><p><strong>4,793</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p><strong>Modality:</strong> MRI T1, grayscale, three anatomical planes</p></li>
+<li><p><strong>Classes:</strong> Glioma · Meningioma · Pituitary tumor · No tumor</p></li>
+<li><p><strong>Annotated by:</strong> certified radiologists</p></li>
+<li><p><strong>Reference:</strong> Fateh et al. (2026). <em>BRISC: Annotated Dataset for
+Brain Tumor Segmentation and Classification.</em> Scientific Data, 13(1):361.
+<a class="reference external" href="https://doi.org/10.1038/s41597-026-06753-y">https://doi.org/10.1038/s41597-026-06753-y</a></p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="benchmark-results">
+<h2>Benchmark Results<a class="headerlink" href="#benchmark-results" title="Permalink to this heading">#</a></h2>
+<section id="weighted-miou-full-comparison-vs-brisc-2025-paper">
+<h3>Weighted mIoU — Full Comparison vs. BRISC 2025 Paper<a class="headerlink" href="#weighted-miou-full-comparison-vs-brisc-2025-paper" title="Permalink to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Glioma</p></th>
+<th class="head"><p>Meningioma</p></th>
+<th class="head"><p>Pituitary</p></th>
+<th class="head"><p>W-mIoU</p></th>
+<th class="head"><p>Source</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><strong>U-Net</strong></p></td>
+<td><p>68.7%</p></td>
+<td><p>90.8%</p></td>
+<td><p>81.3%</p></td>
+<td><p><strong>80.94%</strong></p></td>
+<td><p><strong>Ours</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><strong>UNet++</strong></p></td>
+<td><p>68.6%</p></td>
+<td><p>91.1%</p></td>
+<td><p>80.7%</p></td>
+<td><p><strong>80.85%</strong></p></td>
+<td><p><strong>Ours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>SaberNet ★</p></td>
+<td><p>74.0%</p></td>
+<td><p>82.4%</p></td>
+<td><p>84.3%</p></td>
+<td><p>80.60%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p><strong>Attention U-Net</strong></p></td>
+<td><p>68.2%</p></td>
+<td><p>90.9%</p></td>
+<td><p>80.4%</p></td>
+<td><p><strong>80.52%</strong></p></td>
+<td><p><strong>Ours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><strong>DeepLabV3+</strong></p></td>
+<td><p>68.4%</p></td>
+<td><p>90.6%</p></td>
+<td><p>80.2%</p></td>
+<td><p><strong>80.41%</strong></p></td>
+<td><p><strong>Ours</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p><strong>TransUNet</strong></p></td>
+<td><p>67.6%</p></td>
+<td><p>90.6%</p></td>
+<td><p>80.6%</p></td>
+<td><p><strong>80.34%</strong></p></td>
+<td><p><strong>Ours</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>DAD</p></td>
+<td><p>75.2%</p></td>
+<td><p>80.4%</p></td>
+<td><p>82.3%</p></td>
+<td><p>79.50%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>ABANet</p></td>
+<td><p>72.4%</p></td>
+<td><p>80.4%</p></td>
+<td><p>84.7%</p></td>
+<td><p>79.50%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>BASNet</p></td>
+<td><p>74.0%</p></td>
+<td><p>77.5%</p></td>
+<td><p>81.7%</p></td>
+<td><p>77.90%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>EINet</p></td>
+<td><p>73.6%</p></td>
+<td><p>78.4%</p></td>
+<td><p>80.3%</p></td>
+<td><p>77.70%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>DeepLabV3+ (paper)</p></td>
+<td><p>72.0%</p></td>
+<td><p>77.5%</p></td>
+<td><p>78.7%</p></td>
+<td><p>76.30%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>U-Net (paper)</p></td>
+<td><p>69.7%</p></td>
+<td><p>77.1%</p></td>
+<td><p>79.3%</p></td>
+<td><p>75.70%</p></td>
+<td><p>Fateh et al.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p>★ Previous SOTA. <strong>Bold</strong> = our reproductions.</p>
+</div></blockquote>
+</section>
+<section id="original-contributions-not-reported-in-the-brisc-paper">
+<h3>Original Contributions — Not Reported in the BRISC Paper<a class="headerlink" href="#original-contributions-not-reported-in-the-brisc-paper" title="Permalink to this heading">#</a></h3>
+<p><strong>mIoU by anatomical plane:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Axial</p></th>
+<th class="head"><p>Coronal</p></th>
+<th class="head"><p>Sagittal</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>U-Net</strong></p></td>
+<td><p>79.65%</p></td>
+<td><p>79.90%</p></td>
+<td><p><strong>83.73%</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>UNet++</strong></p></td>
+<td><p>79.17%</p></td>
+<td><p>81.15%</p></td>
+<td><p>82.83%</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Attention U-Net</strong></p></td>
+<td><p>79.11%</p></td>
+<td><p>80.73%</p></td>
+<td><p>82.21%</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TransUNet</strong></p></td>
+<td><p>78.65%</p></td>
+<td><p>80.46%</p></td>
+<td><p>82.48%</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DeepLabV3+</strong></p></td>
+<td><p>78.58%</p></td>
+<td><p>81.02%</p></td>
+<td><p>82.27%</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Finding:</strong> The Sagittal plane is consistently the easiest across all
+models; the Axial plane is the most challenging. The combination
+<strong>Glioma × Axial</strong> concentrates the highest segmentation difficulty —
+a pattern not reported in the original paper and a key motivation for
+the proposed architecture.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="proposed-model-in-progress">
+<h2>Proposed Model — In Progress<a class="headerlink" href="#proposed-model-in-progress" title="Permalink to this heading">#</a></h2>
+<p><strong>Res2Net-SE(2) UNet</strong> — a hybrid architecture combining:</p>
+<ul class="simple">
+<li><p><strong>Res2Net encoder</strong> → multi-scale feature hierarchies within each
+residual block, improving discrimination between tumor morphologies.</p></li>
+<li><p><strong>SE(2) equivariance</strong> → group convolutions equivariant to rotations
+and translations, producing consistent representations across
+anatomical planes.</p></li>
+<li><p><strong>Group Deconvolution decoder</strong> → maintains geometric consistency
+during upsampling.</p></li>
+<li><p><strong>Ablation study</strong> → three variants trained under identical conditions:
+Res2NetUNet · SE2UNet · Res2NetSE2UNet.</p></li>
+</ul>
+<p><em>Results will be added to this repository and the Jupyter Book upon
+completion of training.</em></p>
+</section>
+<hr class="docutils" />
+<section id="training-configuration">
+<h2>Training Configuration<a class="headerlink" href="#training-configuration" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hyperparameter</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Image size</p></td>
+<td><p>512 × 512</p></td>
+</tr>
+<tr class="row-odd"><td><p>Batch size</p></td>
+<td><p>64</p></td>
+</tr>
+<tr class="row-even"><td><p>Optimizer</p></td>
+<td><p>AdamW</p></td>
+</tr>
+<tr class="row-odd"><td><p>Learning rate</p></td>
+<td><p>2e-4</p></td>
+</tr>
+<tr class="row-even"><td><p>Weight decay</p></td>
+<td><p>1e-4</p></td>
+</tr>
+<tr class="row-odd"><td><p>Loss</p></td>
+<td><p>ComboLoss (0.5·Dice + 0.5·BCE)</p></td>
+</tr>
+<tr class="row-even"><td><p>LR Scheduler</p></td>
+<td><p>ReduceLROnPlateau (patience=20, factor=0.5)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Early stopping</p></td>
+<td><p>patience=80</p></td>
+</tr>
+<tr class="row-even"><td><p>Max epochs</p></td>
+<td><p>500</p></td>
+</tr>
+<tr class="row-odd"><td><p>Precision</p></td>
+<td><p>Mixed (AMP)</p></td>
+</tr>
+<tr class="row-even"><td><p>Encoder</p></td>
+<td><p>ResNet34 (ImageNet pretrained)</p></td>
+</tr>
+<tr class="row-odd"><td><p>GPU</p></td>
+<td><p>NVIDIA A100 SXM4 80GB</p></td>
+</tr>
+<tr class="row-even"><td><p>Seed</p></td>
+<td><p>42</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="repository-structure">
+<h2>Repository Structure<a class="headerlink" href="#repository-structure" title="Permalink to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>brain-tumor-segmentation-brisc2025/
+├── docs/
+│   ├── _config.yml
+│   ├── _toc.yml
+│   ├── intro.md
+│   ├── introduccion.ipynb
+│   ├── revision_literatura.ipynb
+│   ├── eda.ipynb
+│   ├── preprocesamiento.ipynb
+│   ├── benchmarks.ipynb
+│   ├── referencias_bibliograficas.md
+│   ├── Imagenes/
+│   └── requirements.txt
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── .gitignore
+└── README.md
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="team">
+<h2>Team<a class="headerlink" href="#team" title="Permalink to this heading">#</a></h2>
+<p><strong>Authors</strong></p>
+<ul class="simple">
+<li><p>Luis D. Peñaranda Pérez — Universidad del Norte</p></li>
+<li><p>Johan D. López — Universidad del Norte</p></li>
+<li><p>David R. Márquez — Universidad del Norte</p></li>
+<li><p>Cristian C. Linero — Universidad del Norte</p></li>
+</ul>
+<p><strong>Supervisors</strong></p>
+<ul class="simple">
+<li><p>Dr. Lihki Rubio — Universidad del Norte</p></li>
+<li><p>Dr. Karen Florez — Universidad del Norte</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this heading">#</a></h2>
+<p>MIT</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-results">Key Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-brisc-2025">Dataset — BRISC 2025</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmark-results">Benchmark Results</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#weighted-miou-full-comparison-vs-brisc-2025-paper">Weighted mIoU — Full Comparison vs. BRISC 2025 Paper</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#original-contributions-not-reported-in-the-brisc-paper">Original Contributions — Not Reported in the BRISC Paper</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proposed-model-in-progress">Proposed Model — In Progress</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-configuration">Training Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-structure">Repository Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#team">Team</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luis D. Peñaranda Pérez · Johan D. López · David R. Márquez · Cristian C. Linero
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
